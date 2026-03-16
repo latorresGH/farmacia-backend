@@ -1,0 +1,90 @@
+Jajaja, dale papurri 😎, vamos a dejar esto **bien sexy y claro**, un diagrama completo de flujo para tu turnero hosteado. Te voy a mostrar **tablet, PC, pantalla, servidor y ticketera**, con las relaciones, eventos y base de datos.
+
+---
+
+# 🔥 Diagrama visual completo — Turnero hosteado
+
+```text
+┌──────────────┐       WebSocket / REST       ┌────────────────────────────┐
+│  Tablet      │ ◄──────────────────────────► │                            │
+│  ReactNative │                               │      Servidor Hosteado     │
+│  Cliente Kiosco│                             │    Backend (NestJS)        │
+│  ┌─────────┐ │                               │                            │
+│  │Botón "Sacar Turno"│                       │  ┌──────────────────────┐  │
+│  └─────────┘ │                               │  │  Tabla Turnos         │  │
+│              │                               │  │  id, numero, tipo,    │  │
+│              │                               │  │  estado, hora_creacion│  │
+│              │                               │  └──────────────────────┘  │
+│              │                               │  ┌──────────────────────┐  │
+│              │                               │  │ Tabla TipoTurno       │  │
+│              │                               │  │ id, nombre, prefijo   │  │
+│              │                               │  └──────────────────────┘  │
+│              │                               │  ┌──────────────────────┐  │
+│              │                               │  │ Tabla Usuarios        │  │
+│              │                               │  │ id, nombre, rol,      │  │
+│              │                               │  │ farmacia_id           │  │
+│              │                               │  └──────────────────────┘  │
+│              │                               │  ┌──────────────────────┐  │
+│              │                               │  │ Ticketera (Servicio) │  │
+│              │                               │  │ Imprime número        │  │
+│              │                               │  └──────────────────────┘  │
+└──────────────┘                               └────────────────────────────┘
+       ▲ WebSocket / REST
+       │
+       │
+┌──────────────┐
+│ PC Personal  │
+│ React Web App│
+│ ┌──────────┐ │
+│ │ Cola de Turnos │
+│ │ Botón "Siguiente"│
+│ │ Botón "Repetir" │
+│ └──────────┘ │
+└──────────────┘
+       ▲ WebSocket
+       │
+┌──────────────┐
+│ Pantalla Ext │
+│ React / Web  │
+│  Solo mostrar│
+│  turno actual│
+└──────────────┘
+```
+
+---
+
+# 💡 Flujo de eventos
+
+1. **Tablet** → “Sacar turno” → POST `/turnos`
+2. **Backend** → genera número automático (T001 / V001) → guarda en DB → imprime ticket vía **ticketera**
+3. **Backend** → emite **WebSocket event “nuevo_turno”**
+4. **PC del personal** → recibe evento → actualiza cola
+5. **Personal presiona “Siguiente”** → backend marca turno `LLAMADO` → emite **evento WebSocket “turno_llamado”**
+6. **Pantalla externa** → recibe evento → muestra número
+7. **Turno atendido** → backend marca `ATENDIDO` → emite **evento WebSocket “turno_atendido”** → todos actualizan
+
+---
+
+# 🧱 Entidades y valores
+
+| Entidad   | Campos principales                | Ejemplo valores       |
+| --------- | --------------------------------- | --------------------- |
+| Farmacia  | id, nombre, direccion, telefono   | “Farmacia ABC”        |
+| Usuario   | id, nombre, rol, farmacia_id      | “Ana”, ADMIN          |
+| TipoTurno | id, nombre, prefijo               | “Vacuna”, prefijo = V |
+| Turno     | id, numero, tipo_turno_id, estado | T005, V001, PENDIENTE |
+| Ticketera | id, tipo, ip/puerto, nombre       | USB / Red             |
+
+---
+
+# 🎯 Tech stack sexy y escalable
+
+* **Backend:** NestJS → modular, escalable, soporta WebSocket nativo
+* **DB:** PostgreSQL en la nube (Railway, DigitalOcean, AWS RDS)
+* **Frontend Tablet:** React Native
+* **Frontend PC personal:** React (Web App)
+* **Pantalla externa:** React mini app en navegador
+* **Impresora:** Conectada a tablet o en red, controlada por backend
+
+---
+
