@@ -11,3 +11,112 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Farmacia {
+  id        Int       @id @default(autoincrement())
+  nombre    String
+  direccion String?
+  telefono  String?
+  email     String?
+  createdAt DateTime  @default(now())
+
+  usuarios  Usuario[]
+  turnos    Turno[]
+  tipos     TipoTurno[]
+  impresoras Impresora[]
+  contadores ContadorTurno[]
+  idempotencyKeys IdempotencyKey[]
+}
+
+model Usuario {
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  email       String   @unique
+  password    String
+  rol         Rol      @default(EMPLEADO)
+
+  farmaciaId  Int
+  farmacia    Farmacia @relation(fields: [farmaciaId], references: [id])
+
+  createdAt   DateTime @default(now())
+}
+
+model TipoTurno {
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  prefijo     String   @default("T")
+  duracionMin Int      @default(10)
+
+  farmaciaId  Int
+  farmacia    Farmacia @relation(fields: [farmaciaId], references: [id])
+
+  turnos      Turno[]
+  contadores ContadorTurno[]
+}
+
+model Turno {
+  id           Int       @id @default(autoincrement())
+  numero       Int
+  codigo       String
+  estado       EstadoTurno @default(PENDIENTE)
+
+  tipoTurnoId  Int
+  tipoTurno    TipoTurno @relation(fields: [tipoTurnoId], references: [id])
+
+  farmaciaId   Int
+  farmacia     Farmacia @relation(fields: [farmaciaId], references: [id])
+
+  horaCreacion DateTime @default(now())
+  horaLlamado  DateTime?
+
+}
+
+model Impresora {
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  tipo        String   // USB o RED
+  ip          String?
+  puerto      Int?
+
+  farmaciaId  Int
+  farmacia    Farmacia @relation(fields: [farmaciaId], references: [id])
+}
+
+model ContadorTurno {
+  id Int @id @default(autoincrement())
+
+  fecha DateTime
+  ultimoNumero Int @default(0)
+
+  farmaciaId Int
+  tipoTurnoId Int
+
+  farmacia Farmacia @relation(fields: [farmaciaId], references: [id])
+  tipoTurno TipoTurno @relation(fields: [tipoTurnoId], references: [id])
+
+  @@unique([farmaciaId, tipoTurnoId, fecha])
+}
+
+enum EstadoTurno {
+  PENDIENTE
+  LLAMADO
+  ATENDIDO
+  CANCELADO
+}
+
+enum Rol {
+  ADMIN
+  EMPLEADO
+}
+
+model IdempotencyKey {
+  id Int @id @default(autoincrement())
+
+  key String @unique
+
+  createdAt DateTime @default(now())
+
+  farmaciaId Int
+
+  farmacia Farmacia @relation(fields: [farmaciaId], references: [id])
+}
