@@ -23,22 +23,21 @@ model Farmacia {
   usuarios  Usuario[]
   turnos    Turno[]
   tipos     TipoTurno[]
-  impresoras Impresora[]
   contadores ContadorTurno[]
   idempotencyKeys IdempotencyKey[]
 }
 
 model Usuario {
-  id          Int      @id @default(autoincrement())
-  nombre      String
-  email       String   @unique
-  password    String
-  rol         Rol      @default(EMPLEADO)
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  email     String   @unique
+  password  String
+  rol       Rol      @default(EMPLEADO)
 
-  farmaciaId  Int
-  farmacia    Farmacia @relation(fields: [farmaciaId], references: [id])
+  farmaciaId Int
+  farmacia   Farmacia @relation(fields: [farmaciaId], references: [id])
 
-  createdAt   DateTime @default(now())
+  createdAt DateTime @default(now())
 }
 
 model TipoTurno {
@@ -51,35 +50,26 @@ model TipoTurno {
   farmacia    Farmacia @relation(fields: [farmaciaId], references: [id])
 
   turnos      Turno[]
-  contadores ContadorTurno[]
+  contadores  ContadorTurno[]
 }
 
 model Turno {
-  id           Int       @id @default(autoincrement())
+  id           Int         @id @default(autoincrement())
+
   numero       Int
   codigo       String
+
   estado       EstadoTurno @default(PENDIENTE)
 
   tipoTurnoId  Int
-  tipoTurno    TipoTurno @relation(fields: [tipoTurnoId], references: [id])
+  tipoTurno    TipoTurno   @relation(fields: [tipoTurnoId], references: [id])
 
   farmaciaId   Int
-  farmacia     Farmacia @relation(fields: [farmaciaId], references: [id])
+  farmacia     Farmacia    @relation(fields: [farmaciaId], references: [id])
 
-  horaCreacion DateTime @default(now())
+  horaCreacion DateTime    @default(now())
   horaLlamado  DateTime?
-
-}
-
-model Impresora {
-  id          Int      @id @default(autoincrement())
-  nombre      String
-  tipo        String   // USB o RED
-  ip          String?
-  puerto      Int?
-
-  farmaciaId  Int
-  farmacia    Farmacia @relation(fields: [farmaciaId], references: [id])
+  idempotencyKeys IdempotencyKey[]
 }
 
 model ContadorTurno {
@@ -97,6 +87,20 @@ model ContadorTurno {
   @@unique([farmaciaId, tipoTurnoId, fecha])
 }
 
+model IdempotencyKey {
+  id Int @id @default(autoincrement())
+
+  key String @unique
+
+  turnoId Int?
+  turno Turno? @relation(fields: [turnoId], references: [id])
+
+  farmaciaId Int
+  farmacia Farmacia @relation(fields: [farmaciaId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
 enum EstadoTurno {
   PENDIENTE
   LLAMADO
@@ -107,16 +111,4 @@ enum EstadoTurno {
 enum Rol {
   ADMIN
   EMPLEADO
-}
-
-model IdempotencyKey {
-  id Int @id @default(autoincrement())
-
-  key String @unique
-
-  createdAt DateTime @default(now())
-
-  farmaciaId Int
-
-  farmacia Farmacia @relation(fields: [farmaciaId], references: [id])
 }

@@ -88,3 +88,80 @@ Jajaja, dale papurri 😎, vamos a dejar esto **bien sexy y claro**, un diagrama
 
 ---
 
+Hoy avancé bastante en el backend del sistema de turnos.
+
+Lo que ya hice:
+
+* Creé el proyecto backend con NestJS.
+* Instalé y configuré Prisma con PostgreSQL.
+* Configuré el PrismaService para manejar la conexión a la base de datos.
+* Armé el primer diseño del schema de la base de datos en Prisma.
+
+Entidades que definí hasta ahora:
+
+* Farmacia
+* Usuario (empleados/admin)
+* TipoTurno (ej: receta, vacunación, etc.)
+* Turno
+* Impresora
+
+La tablet va a permitir que el cliente elija el tipo de turno, y se genera un ticket con un número (ej: R012, A005, etc.).
+
+También estuve viendo dos cosas importantes para que el sistema sea robusto:
+
+1. Transacciones: para evitar que dos tablets generen el mismo número de turno si hacen la request al mismo tiempo.
+
+2. Idempotencia: para evitar que si alguien toca varias veces la tablet o se repite la request se creen turnos duplicados.
+
+Además analizamos el tema de la impresión del ticket.
+
+Arquitectura posible:
+Tablet → backend → base de datos → PC de la farmacia → impresora térmica.
+
+La PC escucharía cuando se crea un turno nuevo y automáticamente imprimiría el ticket.
+
+Cosas que tenemos que decidir mañana:
+
+* Si el cliente va a elegir el tipo de turno en la tablet (recetas, vacunación, caja, etc.) o si va a ser un solo tipo.
+* Cómo queremos manejar la impresión del ticket (tablet directa, o PC de la farmacia que imprime).
+* Si necesitamos guardar impresoras en la base de datos o si la PC simplemente usa la impresora configurada en el sistema.
+* Si el ticket debería mostrar solo el número de turno o también cuánta gente hay adelante.
+
+Próximo paso cuando definamos eso:
+
+* Terminar el modelo de base de datos (agregar contador de turnos e idempotencia).
+* Crear el módulo de turnos en NestJS.
+* Implementar la lógica segura para generar números de turno.
+
+
+
+(La base del proyecto)
+1- Instale prisma -> npm install prisma --save-dev -> npm install @prisma/client.
+2- Genere el prisma (genera los archivos) npm prisma init.
+3- Modifique el prisma/migrations/schema.prisma agregando las tablas y los enums.
+4- Genere una migracion para la base de datos PostgreSQL npx prisma generate dev --name init_database (init_database es el nombre de la migracion)
+5- Genero la migracion en la base de datos npx prisma generate.
+
+(Configuro prisma)
+1- npm install @prisma/adapter-pg pg <- Es para poder generar el service y funcione con PostgreSQL
+2- Genere src/prisma y los 3 prisma (module, service, service.spec)
+
+(Creamos turnos)
+1- Genere la parte de turnos | npx nest g mo turnos | npx nest g s turnos | npx nest g co turnos |
+2- Importe prisma module en turnos.module.ts y lo inyecte en el prisma service.
+3- Se crearon los metodos en el service.
+4- Se crearon los endpoints en controller.
+5- Se agrego la idempotencia en la crecion de turno.
+(en el front la key se va a generar asi:
+import { v4 as uuidv4 } from 'uuid'
+
+       const key = uuidv4()
+)
+
+
+PROXIMAMENTE  + Auth (login + jwt + usuarios)
+              + tipoTurno (CRUD)
+              + Flujo de empleado (llamar al siguiente)
+              + WebSocket
+
+              Chat: Ejemplos de SaaS
