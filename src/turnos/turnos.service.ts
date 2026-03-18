@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { EstadoTurno } from 'generated/prisma/enums';
 import { BadRequestException } from '@nestjs/common';
+import { EstadoTurno } from '@prisma/client';
 
 @Injectable()
 export class TurnosService {
@@ -65,6 +65,10 @@ export class TurnosService {
       const tipo = await tx.tipoTurno.findUnique({
         where: { id: tipoTurnoId },
       });
+
+      if (!tipo) {
+        throw new NotFoundException('Tipo de turno no encontrado');
+      }
 
       const codigo = `${tipo.prefijo}${String(nuevoNumero).padStart(3, '0')}`;
 

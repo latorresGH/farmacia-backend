@@ -10,7 +10,7 @@ import {
     Headers
   } from '@nestjs/common'
   import { TurnosService } from './turnos.service'
-  import { EstadoTurno } from 'generated/prisma/enums';
+  import { EstadoTurno } from '@prisma/client';
   
   @Controller('turnos')
   export class TurnosController {
