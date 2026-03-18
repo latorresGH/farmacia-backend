@@ -165,3 +165,27 @@ PROXIMAMENTE  + Auth (login + jwt + usuarios)
               + WebSocket
 
               Chat: Ejemplos de SaaS
+
+=> Flujo de empleado (llamar al siguiente)
+FIFO global (el más antiguo PENDIENTE de la farmacia(First input, First output))
+Metodo POST
+http://localhost:3005/turnos
+- Se crea un turno (previamente se tiene que crear farmacia + tipoturno)
+
+Metodo POST 
+http://localhost:3005/turnos/1/siguiente
+-Se llama para que cambie de PENDIENTE a LLAMADO
+
+Metodo GET
+http://localhost:3005/turnos/1
+-Se comprueba los id, y los PENDIENTE y LLAMADO.
+
+=> WebSocket
+* Paso 1: npm install @nestjs/websockets @nestjs/platform-socket.io socket.io
+* Se crea en turnos Gateway. (Conectar a module y service)
+* Se implemento que no TODOS los clientes vean los turnos, se separan por farmacia 1-2-3-4.
+* El turno solo se ve solo en la sala donde se llama
+
+=> Auth con JWT
+* Evitar que cualquiera llame turnos, saber quién hizo cada acción
+* Separar farmacias correctamente, base para SaaS multi-cliente-

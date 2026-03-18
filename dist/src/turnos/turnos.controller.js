@@ -45,6 +45,9 @@ let TurnosController = class TurnosController {
     async turnoActual(farmaciaId) {
         return this.turnosService.turnoActual(farmaciaId);
     }
+    async llamarSiguiente(farmaciaId) {
+        return this.turnosService.llamarSiguiente(farmaciaId);
+    }
 };
 exports.TurnosController = TurnosController;
 __decorate([
@@ -98,6 +101,13 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], TurnosController.prototype, "turnoActual", null);
+__decorate([
+    (0, common_1.Post)(':farmaciaId/siguiente'),
+    __param(0, (0, common_1.Param)('farmaciaId', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], TurnosController.prototype, "llamarSiguiente", null);
 exports.TurnosController = TurnosController = __decorate([
     (0, common_1.Controller)('turnos'),
     __metadata("design:paramtypes", [turnos_service_1.TurnosService])

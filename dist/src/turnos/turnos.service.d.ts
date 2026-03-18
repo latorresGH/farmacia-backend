@@ -1,8 +1,10 @@
 import { PrismaService } from '../prisma/prisma.service';
 import { EstadoTurno } from '@prisma/client';
+import { TurnosGateway } from './turnos.gateway';
 export declare class TurnosService {
     private prisma;
-    constructor(prisma: PrismaService);
+    private gateway;
+    constructor(prisma: PrismaService, gateway: TurnosGateway);
     crearTurno(farmaciaId: number, tipoTurnoId: number, idempotencyKey: string): Promise<{
         id: number;
         farmaciaId: number;
@@ -72,6 +74,16 @@ export declare class TurnosService {
         horaLlamado: Date | null;
     }>;
     turnoActual(farmaciaId: number): Promise<{
+        id: number;
+        farmaciaId: number;
+        numero: number;
+        codigo: string;
+        estado: import("@prisma/client").$Enums.EstadoTurno;
+        tipoTurnoId: number;
+        horaCreacion: Date;
+        horaLlamado: Date | null;
+    } | null>;
+    llamarSiguiente(farmaciaId: number): Promise<{
         id: number;
         farmaciaId: number;
         numero: number;

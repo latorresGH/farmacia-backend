@@ -84,4 +84,14 @@ export declare class TurnosController {
         horaCreacion: Date;
         horaLlamado: Date | null;
     } | null>;
+    llamarSiguiente(farmaciaId: number): Promise<{
+        id: number;
+        farmaciaId: number;
+        numero: number;
+        codigo: string;
+        estado: import("@prisma/client").$Enums.EstadoTurno;
+        tipoTurnoId: number;
+        horaCreacion: Date;
+        horaLlamado: Date | null;
+    } | null>;
 }

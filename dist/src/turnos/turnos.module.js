@@ -11,13 +11,14 @@ const common_1 = require("@nestjs/common");
 const turnos_service_1 = require("./turnos.service");
 const turnos_controller_1 = require("./turnos.controller");
 const prisma_module_1 = require("../prisma/prisma.module");
+const turnos_gateway_1 = require("./turnos.gateway");
 let TurnosModule = class TurnosModule {
 };
 exports.TurnosModule = TurnosModule;
 exports.TurnosModule = TurnosModule = __decorate([
     (0, common_1.Module)({
         imports: [prisma_module_1.PrismaModule],
-        providers: [turnos_service_1.TurnosService],
+        providers: [turnos_service_1.TurnosService, turnos_gateway_1.TurnosGateway],
         controllers: [turnos_controller_1.TurnosController],
     })
 ], TurnosModule);

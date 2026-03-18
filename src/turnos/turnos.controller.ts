@@ -82,5 +82,12 @@ import {
     ) {
       return this.turnosService.turnoActual(farmaciaId)
     }
-  
+    
+    @Post(':farmaciaId/siguiente')
+    async llamarSiguiente(
+      @Param('farmaciaId', ParseIntPipe) farmaciaId: number
+    ) {
+      return this.turnosService.llamarSiguiente(farmaciaId);
+    }
+    
   }

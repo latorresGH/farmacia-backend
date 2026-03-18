@@ -14,10 +14,13 @@ const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const common_2 = require("@nestjs/common");
 const client_1 = require("@prisma/client");
+const turnos_gateway_1 = require("./turnos.gateway");
 let TurnosService = class TurnosService {
     prisma;
-    constructor(prisma) {
+    gateway;
+    constructor(prisma, gateway) {
         this.prisma = prisma;
+        this.gateway = gateway;
     }
     async crearTurno(farmaciaId, tipoTurnoId, idempotencyKey) {
         if (!farmaciaId || !tipoTurnoId) {
@@ -162,10 +165,44 @@ let TurnosService = class TurnosService {
             },
         });
     }
+    async llamarSiguiente(farmaciaId) {
+        const resultado = await this.prisma.$transaction(async (tx) => {
+            const turno = await tx.turno.findFirst({
+                where: {
+                    farmaciaId,
+                    estado: client_1.EstadoTurno.PENDIENTE,
+                },
+                orderBy: {
+                    numero: 'asc',
+                },
+            });
+            if (!turno) {
+                throw new common_1.NotFoundException('No hay turnos pendientes');
+            }
+            const updated = await tx.turno.updateMany({
+                where: {
+                    id: turno.id,
+                    estado: client_1.EstadoTurno.PENDIENTE,
+                },
+                data: {
+                    estado: client_1.EstadoTurno.LLAMADO,
+                    horaLlamado: new Date(),
+                },
+            });
+            if (updated.count === 0) {
+                throw new common_2.BadRequestException('Otro empleado ya tomó este turno');
+            }
+            return tx.turno.findUnique({
+                where: { id: turno.id },
+            });
+        });
+        this.gateway.emitirTurnoLlamado(resultado);
+        return resultado;
+    }
 };
 exports.TurnosService = TurnosService;
 exports.TurnosService = TurnosService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService, turnos_gateway_1.TurnosGateway])
 ], TurnosService);
 //# sourceMappingURL=turnos.service.js.map

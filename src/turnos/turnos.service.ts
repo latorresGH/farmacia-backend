@@ -2,10 +2,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { BadRequestException } from '@nestjs/common';
 import { EstadoTurno } from '@prisma/client';
+import { TurnosGateway } from './turnos.gateway';
 
 @Injectable()
 export class TurnosService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private gateway: TurnosGateway,) {}
 
   async crearTurno(
     farmaciaId: number,
@@ -186,4 +187,48 @@ export class TurnosService {
       },
     });
   }
+
+async llamarSiguiente(farmaciaId: number) {
+
+  const resultado = await this.prisma.$transaction(async (tx) => {
+
+    const turno = await tx.turno.findFirst({
+      where: {
+        farmaciaId,
+        estado: EstadoTurno.PENDIENTE,
+      },
+      orderBy: {
+        numero: 'asc',
+      },
+    });
+
+    if (!turno) {
+      throw new NotFoundException('No hay turnos pendientes');
+    }
+
+    const updated = await tx.turno.updateMany({
+      where: {
+        id: turno.id,
+        estado: EstadoTurno.PENDIENTE,
+      },
+      data: {
+        estado: EstadoTurno.LLAMADO,
+        horaLlamado: new Date(),
+      },
+    });
+
+    if (updated.count === 0) {
+      throw new BadRequestException('Otro empleado ya tomó este turno');
+    }
+
+    return tx.turno.findUnique({
+      where: { id: turno.id },
+    });
+  });
+
+  // 👇 SOLO si todo salió bien
+  this.gateway.emitirTurnoLlamado(resultado);
+
+  return resultado;
+}
 }
