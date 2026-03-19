@@ -165,12 +165,13 @@ let TurnosService = class TurnosService {
             },
         });
     }
-    async llamarSiguiente(farmaciaId) {
+    async llamarSiguiente(farmaciaId, tipoTurnoId) {
         const resultado = await this.prisma.$transaction(async (tx) => {
             const turno = await tx.turno.findFirst({
                 where: {
                     farmaciaId,
                     estado: client_1.EstadoTurno.PENDIENTE,
+                    ...(tipoTurnoId && { tipoTurnoId }),
                 },
                 orderBy: {
                     numero: 'asc',

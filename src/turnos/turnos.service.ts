@@ -188,7 +188,7 @@ export class TurnosService {
     });
   }
 
-async llamarSiguiente(farmaciaId: number) {
+async llamarSiguiente(farmaciaId: number, tipoTurnoId?: number) {
 
   const resultado = await this.prisma.$transaction(async (tx) => {
 
@@ -196,6 +196,7 @@ async llamarSiguiente(farmaciaId: number) {
       where: {
         farmaciaId,
         estado: EstadoTurno.PENDIENTE,
+        ...(tipoTurnoId && { tipoTurnoId }),
       },
       orderBy: {
         numero: 'asc',
@@ -226,7 +227,6 @@ async llamarSiguiente(farmaciaId: number) {
     });
   });
 
-  // 👇 SOLO si todo salió bien
   this.gateway.emitirTurnoLlamado(resultado);
 
   return resultado;

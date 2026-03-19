@@ -83,7 +83,7 @@ export declare class TurnosService {
         horaCreacion: Date;
         horaLlamado: Date | null;
     } | null>;
-    llamarSiguiente(farmaciaId: number): Promise<{
+    llamarSiguiente(farmaciaId: number, tipoTurnoId?: number): Promise<{
         id: number;
         farmaciaId: number;
         numero: number;

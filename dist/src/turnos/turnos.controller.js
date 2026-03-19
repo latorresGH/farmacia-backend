@@ -16,16 +16,19 @@ exports.TurnosController = void 0;
 const common_1 = require("@nestjs/common");
 const turnos_service_1 = require("./turnos.service");
 const client_1 = require("@prisma/client");
+const CrearTurnoDto_1 = require("./dtos/CrearTurnoDto");
+const LlamarSiguienteDto_1 = require("./dtos/LlamarSiguienteDto");
+const common_2 = require("@nestjs/common");
 let TurnosController = class TurnosController {
     turnosService;
     constructor(turnosService) {
         this.turnosService = turnosService;
     }
-    async crearTurno(body, idempotencyKey) {
+    async crearTurno(dto, idempotencyKey) {
         if (!idempotencyKey) {
-            throw new Error('Idempotency-Key header is required');
+            throw new common_2.BadRequestException('Idempotency-Key header is required');
         }
-        return this.turnosService.crearTurno(body.farmaciaId, body.tipoTurnoId, idempotencyKey);
+        return this.turnosService.crearTurno(dto.farmaciaId, dto.tipoTurnoId, idempotencyKey);
     }
     async listarHoy(farmaciaId) {
         return this.turnosService.listarTurnosHoy(farmaciaId);
@@ -45,8 +48,8 @@ let TurnosController = class TurnosController {
     async turnoActual(farmaciaId) {
         return this.turnosService.turnoActual(farmaciaId);
     }
-    async llamarSiguiente(farmaciaId) {
-        return this.turnosService.llamarSiguiente(farmaciaId);
+    async llamarSiguiente(farmaciaId, dto) {
+        return this.turnosService.llamarSiguiente(farmaciaId, dto.tipoTurnoId);
     }
 };
 exports.TurnosController = TurnosController;
@@ -55,7 +58,7 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Headers)('idempotency-key')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [CrearTurnoDto_1.CrearTurnoDto, String]),
     __metadata("design:returntype", Promise)
 ], TurnosController.prototype, "crearTurno", null);
 __decorate([
@@ -104,8 +107,9 @@ __decorate([
 __decorate([
     (0, common_1.Post)(':farmaciaId/siguiente'),
     __param(0, (0, common_1.Param)('farmaciaId', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
+    __metadata("design:paramtypes", [Number, LlamarSiguienteDto_1.LlamarSiguienteDto]),
     __metadata("design:returntype", Promise)
 ], TurnosController.prototype, "llamarSiguiente", null);
 exports.TurnosController = TurnosController = __decorate([
