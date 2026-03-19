@@ -45,6 +45,8 @@ model TipoTurno {
   prefijo     String   @default("T")
   duracionMin Int      @default(10)
 
+  activo      Boolean  @default(true) // 👈 ESTE
+
   farmaciaId  Int
   farmacia    Farmacia @relation(fields: [farmaciaId], references: [id])
 
