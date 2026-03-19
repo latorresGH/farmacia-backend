@@ -189,3 +189,6 @@ http://localhost:3005/turnos/1
 => Auth con JWT
 * Evitar que cualquiera llame turnos, saber quién hizo cada acción
 * Separar farmacias correctamente, base para SaaS multi-cliente-
+- npm install @nestjs/jwt @nestjs/passport passport passport-jwt bcrypt
+- npm install -D @types/passport-jwt @types/bcrypt
+* Se genera => npx nest g module auth | npx nest g service auth | npx nest g controller auth.
