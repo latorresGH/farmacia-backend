@@ -1,6 +1,10 @@
+import { OnGatewayConnection } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-export declare class TurnosGateway {
+import { JwtService } from '@nestjs/jwt';
+export declare class TurnosGateway implements OnGatewayConnection {
+    private jwtService;
     server: Server;
-    handleJoin(farmaciaId: number, client: Socket): void;
+    constructor(jwtService: JwtService);
+    handleConnection(client: Socket): Promise<void>;
     emitirTurnoLlamado(turno: any): void;
 }

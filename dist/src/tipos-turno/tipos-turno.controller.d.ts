@@ -13,6 +13,7 @@ export declare class TiposTurnoController {
         nombre: string;
         prefijo: string;
         duracionMin: number;
+        activo: boolean;
     }>;
     obtenerTipos(farmaciaId: number): Promise<{
         id: number;
@@ -20,6 +21,7 @@ export declare class TiposTurnoController {
         nombre: string;
         prefijo: string;
         duracionMin: number;
+        activo: boolean;
     }[]>;
     obtenerTipo(id: number): Promise<{
         id: number;
@@ -27,6 +29,7 @@ export declare class TiposTurnoController {
         nombre: string;
         prefijo: string;
         duracionMin: number;
+        activo: boolean;
     }>;
     actualizarTipo(id: number, body: {
         nombre?: string;
@@ -38,6 +41,7 @@ export declare class TiposTurnoController {
         nombre: string;
         prefijo: string;
         duracionMin: number;
+        activo: boolean;
     }>;
     eliminarTipo(id: number): Promise<{
         id: number;
@@ -45,5 +49,6 @@ export declare class TiposTurnoController {
         nombre: string;
         prefijo: string;
         duracionMin: number;
+        activo: boolean;
     }>;
 }

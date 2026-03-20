@@ -192,3 +192,163 @@ http://localhost:3005/turnos/1
 - npm install @nestjs/jwt @nestjs/passport passport passport-jwt bcrypt
 - npm install -D @types/passport-jwt @types/bcrypt
 * Se genera => npx nest g module auth | npx nest g service auth | npx nest g controller auth.
+* Se genera => npx nest g provider auth/jwt.strategy
+* + => npx nest g guard auth/jwt
+* Se agrega super_secret_key .env
+* Se tiene que registrar un usuario + login => desde el token que devuelve del post en los GET/POST de turnos te coloca header = Authorization  value = Bearer + espacio + token de login
+
+=> Auth con JWT
+
+* Evitar que cualquiera llame turnos
+* Saber qué usuario hizo cada acción
+* Separar farmacias (base SaaS multi-cliente)
+
+---
+
+* Instalación:
+
+- npm install @nestjs/jwt @nestjs/passport passport passport-jwt bcrypt
+- npm install -D @types/passport-jwt @types/bcrypt
+
+---
+
+* Generación:
+
+- npx nest g module auth
+- npx nest g service auth
+- npx nest g controller auth
+- npx nest g provider auth/jwt.strategy
+- npx nest g guard auth/jwt
+
+---
+
+* .env:
+
+- JWT_SECRET=super_secret_key
+
+---
+
+* AuthModule:
+
+- Se configura JwtModule con secret y expiresIn
+
+---
+
+* Register:
+
+- Se crea usuario
+- Se hashea password con bcrypt
+- Se guarda con farmaciaId y rol (ADMIN o EMPLEADO)
+
+---
+
+* Login:
+
+- Se valida email + password
+- Se genera token JWT
+
+Payload del token:
+
+* userId
+* farmaciaId
+* rol
+
+---
+
+* Uso del token:
+
+- En headers:
+  Authorization: Bearer TU_TOKEN
+
+---
+
+* JwtStrategy:
+
+- Lee token del header
+- Valida con JWT_SECRET
+- Devuelve payload → req.user
+
+---
+
+* JwtGuard:
+
+- Protege endpoints
+- Si no hay token → 401
+
+---
+
+* Roles:
+
+- Se crea decorator @Roles()
+- Se crea RolesGuard
+
+---
+
+* Uso de roles:
+
+- @UseGuards(JwtAuthGuard, RolesGuard)
+
+Ej:
+
+* ADMIN:
+  @Roles('ADMIN')
+
+* EMPLEADO:
+  @Roles('ADMIN', 'EMPLEADO')
+
+* Sin roles:
+  cualquier logueado
+
+---
+
+* Multi-tenant:
+
+- NO usar farmaciaId del frontend
+- Usar siempre:
+  req.user.farmaciaId
+
+✔ evita acceder a otra farmacia
+
+---
+
+* WebSockets:
+
+- Cliente se conecta con token:
+  auth: { token: JWT }
+
+- Backend valida token
+
+- Mete cliente en room:
+  farmacia_{id}
+
+- Emite eventos:
+  turno_llamado
+
+---
+
+* Problemas comunes:
+
+- 401 → token mal o falta Bearer
+- secret error → JwtModule no importado
+- WS no funciona → cliente no autenticado
+
+---
+
+* Importante:
+
+- Empleados/Admin → usan JWT
+- Cliente (tablet) → NO usa login
+
+---
+
+* Estado actual:
+  ✔ Auth funcionando
+  ✔ Roles funcionando
+  ✔ Seguridad por farmacia
+  ✔ WebSockets funcionando
+
+---
+
+* Siguiente:
+
+- Hacer crearTurno público (tablet)

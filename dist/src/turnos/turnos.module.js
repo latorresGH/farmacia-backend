@@ -12,12 +12,16 @@ const turnos_service_1 = require("./turnos.service");
 const turnos_controller_1 = require("./turnos.controller");
 const prisma_module_1 = require("../prisma/prisma.module");
 const turnos_gateway_1 = require("./turnos.gateway");
+const jwt_1 = require("@nestjs/jwt");
 let TurnosModule = class TurnosModule {
 };
 exports.TurnosModule = TurnosModule;
 exports.TurnosModule = TurnosModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule],
+        imports: [prisma_module_1.PrismaModule, jwt_1.JwtModule.register({
+                secret: process.env.JWT_SECRET,
+            }),
+        ],
         providers: [turnos_service_1.TurnosService, turnos_gateway_1.TurnosGateway],
         controllers: [turnos_controller_1.TurnosController],
     })

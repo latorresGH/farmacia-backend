@@ -22,6 +22,7 @@ export declare class TurnosService {
             nombre: string;
             prefijo: string;
             duracionMin: number;
+            activo: boolean;
         };
     } & {
         id: number;
@@ -43,7 +44,7 @@ export declare class TurnosService {
         horaCreacion: Date;
         horaLlamado: Date | null;
     }[]>;
-    llamarTurno(turnoId: number): Promise<{
+    llamarTurno(turnoId: number, farmaciaId: number): Promise<{
         id: number;
         farmaciaId: number;
         numero: number;
@@ -53,7 +54,7 @@ export declare class TurnosService {
         horaCreacion: Date;
         horaLlamado: Date | null;
     }>;
-    finalizarTurno(turnoId: number): Promise<{
+    finalizarTurno(turnoId: number, farmaciaId: number): Promise<{
         id: number;
         farmaciaId: number;
         numero: number;
@@ -63,7 +64,7 @@ export declare class TurnosService {
         horaCreacion: Date;
         horaLlamado: Date | null;
     }>;
-    cancelarTurno(turnoId: number): Promise<{
+    cancelarTurno(turnoId: number, farmaciaId: number): Promise<{
         id: number;
         farmaciaId: number;
         numero: number;

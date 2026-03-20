@@ -8,20 +8,28 @@ import {
   ParseIntPipe,
   Query,
   Headers,
+  BadRequestException,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { TurnosService } from './turnos.service';
 import { EstadoTurno } from '@prisma/client';
 import { CrearTurnoDto } from './dtos/CrearTurnoDto';
 import { LlamarSiguienteDto } from './dtos/LlamarSiguienteDto';
-import { BadRequestException } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
+import type { Request } from 'express';
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('turnos')
 export class TurnosController {
   constructor(private readonly turnosService: TurnosService) {}
 
-  // ✅ Crear turno (TABLET)
+  // ✅ Crear turno
   @Post()
   async crearTurno(
+    @Req() req: Request,
     @Body() dto: CrearTurnoDto,
     @Headers('idempotency-key') idempotencyKey: string,
   ) {
@@ -29,57 +37,82 @@ export class TurnosController {
       throw new BadRequestException('Idempotency-Key header is required');
     }
 
+    const farmaciaId = (req as any).user.farmaciaId;
+
     return this.turnosService.crearTurno(
-      dto.farmaciaId,
+      farmaciaId,
       dto.tipoTurnoId,
       idempotencyKey,
     );
   }
 
-  // ✅ Listar turnos de hoy (PC)
-  @Get('hoy/:farmaciaId')
-  async listarHoy(@Param('farmaciaId', ParseIntPipe) farmaciaId: number) {
+  // ✅ Listar turnos de hoy
+  @Get('hoy')
+  async listarHoy(@Req() req: Request) {
+    const farmaciaId = (req as any).user.farmaciaId;
+
     return this.turnosService.listarTurnosHoy(farmaciaId);
   }
 
-  // ✅ Obtener todos (admin / estadísticas)
-  @Get(':farmaciaId')
+  // ✅ Obtener todos
+  @Get()
   async obtenerTodos(
-    @Param('farmaciaId', ParseIntPipe) farmaciaId: number,
+    @Req() req: Request,
     @Query('estado') estado?: EstadoTurno,
   ) {
+    const farmaciaId = (req as any).user.farmaciaId;
+
     return this.turnosService.obtenerTurnos(farmaciaId, estado);
   }
 
-  // ✅ Llamar turno (PC)
+  // ✅ Llamar turno
+  @Roles('EMPLEADO', 'ADMIN')
   @Patch(':id/llamar')
-  async llamarTurno(@Param('id', ParseIntPipe) id: number) {
-    return this.turnosService.llamarTurno(id);
+  async llamarTurno(
+    @Req() req: Request,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    const farmaciaId = (req as any).user.farmaciaId;
+
+    return this.turnosService.llamarTurno(id, farmaciaId);
   }
 
   // ✅ Finalizar turno
+  @Roles('EMPLEADO', 'ADMIN')
   @Patch(':id/finalizar')
-  async finalizarTurno(@Param('id', ParseIntPipe) id: number) {
-    return this.turnosService.finalizarTurno(id);
+  async finalizarTurno(
+    @Req() req: Request,
+    @Param('id', ParseIntPipe) id: number) {
+    const farmaciaId = (req as any).user.farmaciaId;
+
+    return this.turnosService.finalizarTurno(id, farmaciaId);
   }
 
   // ✅ Cancelar turno
+  @Roles('ADMIN')
   @Patch(':id/cancelar')
-  async cancelarTurno(@Param('id', ParseIntPipe) id: number) {
-    return this.turnosService.cancelarTurno(id);
+  async cancelarTurno(
+    @Req() req: Request,
+    @Param('id', ParseIntPipe) id: number) {
+    const farmaciaId = (req as any).user.farmaciaId;
+
+    return this.turnosService.cancelarTurno(id, farmaciaId);
   }
 
-  // ✅ Turno actual (pantalla / TV)
-  @Get('actual/:farmaciaId')
-  async turnoActual(@Param('farmaciaId', ParseIntPipe) farmaciaId: number) {
+  // ✅ Turno actual
+  @Get('actual')
+  async turnoActual(@Req() req: Request) {
+    const farmaciaId = (req as any).user.farmaciaId;
+
     return this.turnosService.turnoActual(farmaciaId);
   }
 
-  @Post(':farmaciaId/siguiente')
-  async llamarSiguiente(
-    @Param('farmaciaId', ParseIntPipe) farmaciaId: number,
-    @Body() dto: LlamarSiguienteDto,
-  ) {
+  // ✅ Llamar siguiente
+  @Roles('EMPLEADO', 'ADMIN')
+  @Post('siguiente')
+  async llamarSiguiente(@Req() req: Request, @Body() dto: LlamarSiguienteDto) {
+    const farmaciaId = (req as any).user.farmaciaId;
+
     return this.turnosService.llamarSiguiente(farmaciaId, dto.tipoTurnoId);
   }
 }

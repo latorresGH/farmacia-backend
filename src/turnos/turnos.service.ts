@@ -124,27 +124,33 @@ export class TurnosService {
     });
   }
 
-  async llamarTurno(turnoId: number) {
-    const turno = await this.prisma.turno.findUnique({
-      where: { id: turnoId },
-    });
+  async llamarTurno(turnoId: number, farmaciaId: number) {
+  const turno = await this.prisma.turno.findFirst({
+    where: {
+      id: turnoId,
+      farmaciaId,
+    },
+  });
 
-    if (!turno) {
-      throw new NotFoundException('Turno no encontrado');
-    }
-
-    return this.prisma.turno.update({
-      where: { id: turnoId },
-      data: {
-        estado: EstadoTurno.LLAMADO,
-        horaLlamado: new Date(),
-      },
-    });
+  if (!turno) {
+    throw new NotFoundException('Turno no encontrado');
   }
 
-  async finalizarTurno(turnoId: number) {
+  return this.prisma.turno.update({
+    where: { id: turnoId },
+    data: {
+      estado: EstadoTurno.LLAMADO,
+      horaLlamado: new Date(),
+    },
+  });
+}
+
+  async finalizarTurno(turnoId: number, farmaciaId: number) {
     const turno = await this.prisma.turno.findUnique({
-      where: { id: turnoId },
+      where: { 
+        id: turnoId,
+        farmaciaId,
+       },
     });
 
     if (!turno) {
@@ -159,9 +165,12 @@ export class TurnosService {
     });
   }
 
-  async cancelarTurno(turnoId: number) {
+  async cancelarTurno(turnoId: number, farmaciaId: number) {
     const turno = await this.prisma.turno.findUnique({
-      where: { id: turnoId },
+      where: {
+        id: turnoId,
+        farmaciaId,
+       },
     });
 
     if (!turno) {
@@ -189,7 +198,6 @@ export class TurnosService {
   }
 
 async llamarSiguiente(farmaciaId: number, tipoTurnoId?: number) {
-
   const resultado = await this.prisma.$transaction(async (tx) => {
 
     const turno = await tx.turno.findFirst({
@@ -222,11 +230,14 @@ async llamarSiguiente(farmaciaId: number, tipoTurnoId?: number) {
       throw new BadRequestException('Otro empleado ya tomó este turno');
     }
 
-    return tx.turno.findUnique({
+    const resultado = await tx.turno.findUnique({
       where: { id: turno.id },
     });
+
+    return resultado;
   });
 
+  // 🔥 IMPORTANTE: emitir FUERA de la transacción
   this.gateway.emitirTurnoLlamado(resultado);
 
   return resultado;

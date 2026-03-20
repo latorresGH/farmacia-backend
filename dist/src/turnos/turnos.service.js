@@ -111,9 +111,12 @@ let TurnosService = class TurnosService {
             },
         });
     }
-    async llamarTurno(turnoId) {
-        const turno = await this.prisma.turno.findUnique({
-            where: { id: turnoId },
+    async llamarTurno(turnoId, farmaciaId) {
+        const turno = await this.prisma.turno.findFirst({
+            where: {
+                id: turnoId,
+                farmaciaId,
+            },
         });
         if (!turno) {
             throw new common_1.NotFoundException('Turno no encontrado');
@@ -126,9 +129,12 @@ let TurnosService = class TurnosService {
             },
         });
     }
-    async finalizarTurno(turnoId) {
+    async finalizarTurno(turnoId, farmaciaId) {
         const turno = await this.prisma.turno.findUnique({
-            where: { id: turnoId },
+            where: {
+                id: turnoId,
+                farmaciaId,
+            },
         });
         if (!turno) {
             throw new common_1.NotFoundException('Turno no encontrado');
@@ -140,9 +146,12 @@ let TurnosService = class TurnosService {
             },
         });
     }
-    async cancelarTurno(turnoId) {
+    async cancelarTurno(turnoId, farmaciaId) {
         const turno = await this.prisma.turno.findUnique({
-            where: { id: turnoId },
+            where: {
+                id: turnoId,
+                farmaciaId,
+            },
         });
         if (!turno) {
             throw new common_1.NotFoundException('Turno no encontrado');
@@ -193,9 +202,10 @@ let TurnosService = class TurnosService {
             if (updated.count === 0) {
                 throw new common_2.BadRequestException('Otro empleado ya tomó este turno');
             }
-            return tx.turno.findUnique({
+            const resultado = await tx.turno.findUnique({
                 where: { id: turno.id },
             });
+            return resultado;
         });
         this.gateway.emitirTurnoLlamado(resultado);
         return resultado;

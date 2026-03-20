@@ -10,11 +10,13 @@ exports.TiposTurnoModule = void 0;
 const common_1 = require("@nestjs/common");
 const tipos_turno_service_1 = require("./tipos-turno.service");
 const tipos_turno_controller_1 = require("./tipos-turno.controller");
+const prisma_module_1 = require("../prisma/prisma.module");
 let TiposTurnoModule = class TiposTurnoModule {
 };
 exports.TiposTurnoModule = TiposTurnoModule;
 exports.TiposTurnoModule = TiposTurnoModule = __decorate([
     (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule],
         providers: [tipos_turno_service_1.TiposTurnoService],
         controllers: [tipos_turno_controller_1.TiposTurnoController]
     })

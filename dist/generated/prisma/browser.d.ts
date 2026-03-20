@@ -1,0 +1,10 @@
+import * as Prisma from './internal/prismaNamespaceBrowser.js';
+export { Prisma };
+export * as $Enums from './enums.js';
+export * from './enums.js';
+export type Farmacia = Prisma.FarmaciaModel;
+export type Usuario = Prisma.UsuarioModel;
+export type TipoTurno = Prisma.TipoTurnoModel;
+export type Turno = Prisma.TurnoModel;
+export type ContadorTurno = Prisma.ContadorTurnoModel;
+export type IdempotencyKey = Prisma.IdempotencyKeyModel;
