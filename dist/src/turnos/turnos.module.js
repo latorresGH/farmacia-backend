@@ -7,13 +7,24 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TurnosModule = void 0;
-const common_1 = require("@nestjs/common");
+const rate_limit_middleware_1 = require("../middleware/rate-limit.middleware");
 const turnos_service_1 = require("./turnos.service");
 const turnos_controller_1 = require("./turnos.controller");
 const prisma_module_1 = require("../prisma/prisma.module");
 const turnos_gateway_1 = require("./turnos.gateway");
 const jwt_1 = require("@nestjs/jwt");
+const common_1 = require("@nestjs/common");
+const turnos_public_controller_1 = require("./turnos-public.controller");
+const common_2 = require("@nestjs/common");
 let TurnosModule = class TurnosModule {
+    configure(consumer) {
+        consumer
+            .apply(rate_limit_middleware_1.RateLimitMiddleware)
+            .forRoutes({
+            path: 'turnos/public',
+            method: common_2.RequestMethod.POST,
+        });
+    }
 };
 exports.TurnosModule = TurnosModule;
 exports.TurnosModule = TurnosModule = __decorate([
@@ -23,7 +34,7 @@ exports.TurnosModule = TurnosModule = __decorate([
             }),
         ],
         providers: [turnos_service_1.TurnosService, turnos_gateway_1.TurnosGateway],
-        controllers: [turnos_controller_1.TurnosController],
+        controllers: [turnos_controller_1.TurnosController, turnos_public_controller_1.TurnosPublicController],
     })
 ], TurnosModule);
 //# sourceMappingURL=turnos.module.js.map

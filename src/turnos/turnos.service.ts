@@ -21,12 +21,17 @@ export class TurnosService {
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
 
-    return this.prisma.$transaction(async (tx) => {
+    const turno = await this.prisma.$transaction(async (tx) => {
       // 1️⃣ buscar key
-      const existingKey = await tx.idempotencyKey.findUnique({
-        where: { key: idempotencyKey },
-        include: { turno: true },
-      });
+    const existingKey = await tx.idempotencyKey.findUnique({
+      where: {
+        key_farmaciaId: {
+          key: idempotencyKey,
+          farmaciaId,
+        },
+      },
+      include: { turno: true },
+    });
 
       if (existingKey) {
         return existingKey.turno;
@@ -88,8 +93,13 @@ export class TurnosService {
         data: { turnoId: turno.id },
       });
 
+      // 🔥 emitir fuera de la transacción
+      
       return turno;
     });
+
+    this.gateway.emitirTurnoCreado(turno);
+    return turno;
   }
 
   async obtenerTurnos(farmaciaId: number, estado?: EstadoTurno) {
@@ -136,53 +146,55 @@ export class TurnosService {
     throw new NotFoundException('Turno no encontrado');
   }
 
-  return this.prisma.turno.update({
-    where: { id: turnoId },
-    data: {
-      estado: EstadoTurno.LLAMADO,
-      horaLlamado: new Date(),
-    },
-  });
+      const updated = await this.prisma.turno.update({
+      where: { id: turnoId },
+      data: {
+        estado: EstadoTurno.LLAMADO,
+        horaLlamado: new Date(),
+      },
+    });
+
+    this.gateway.emitirTurnoLlamado(updated);
+
+    return updated;
 }
 
   async finalizarTurno(turnoId: number, farmaciaId: number) {
-    const turno = await this.prisma.turno.findUnique({
-      where: { 
-        id: turnoId,
-        farmaciaId,
-       },
-    });
+  const turno = await this.prisma.turno.findFirst({
+    where: { id: turnoId, farmaciaId },
+  });
 
-    if (!turno) {
-      throw new NotFoundException('Turno no encontrado');
-    }
+  if (!turno) {
+    throw new NotFoundException('Turno no encontrado');
+  }
 
-    return this.prisma.turno.update({
-      where: { id: turnoId },
-      data: {
-        estado: EstadoTurno.ATENDIDO,
-      },
-    });
+  const updated = await this.prisma.turno.update({
+    where: { id: turnoId },
+    data: { estado: EstadoTurno.ATENDIDO },
+  });
+
+  this.gateway.emitirTurnoFinalizado(updated);
+
+  return updated;
   }
 
   async cancelarTurno(turnoId: number, farmaciaId: number) {
-    const turno = await this.prisma.turno.findUnique({
-      where: {
-        id: turnoId,
-        farmaciaId,
-       },
-    });
+const turno = await this.prisma.turno.findFirst({
+  where: { id: turnoId, farmaciaId },
+});
 
-    if (!turno) {
-      throw new NotFoundException('Turno no encontrado');
-    }
+if (!turno) {
+  throw new NotFoundException('Turno no encontrado');
+}
 
-    return this.prisma.turno.update({
-      where: { id: turnoId },
-      data: {
-        estado: EstadoTurno.CANCELADO,
-      },
-    });
+const updated = await this.prisma.turno.update({
+  where: { id: turnoId },
+  data: { estado: EstadoTurno.CANCELADO },
+});
+
+this.gateway.emitirTurnoCancelado(updated);
+
+return updated;
   }
 
   async turnoActual(farmaciaId: number) {
@@ -241,5 +253,33 @@ async llamarSiguiente(farmaciaId: number, tipoTurnoId?: number) {
   this.gateway.emitirTurnoLlamado(resultado);
 
   return resultado;
+}
+
+async crearTurnoPublico(
+  farmaciaId: number,
+  tipoTurnoId: number,
+  idempotencyKey: string,
+) {
+  if (!farmaciaId || !tipoTurnoId) {
+    throw new BadRequestException('Datos inválidos');
+  }
+
+  // 🔒 Validar que el tipo pertenece a la farmacia
+  const tipo = await this.prisma.tipoTurno.findFirst({
+    where: {
+      id: tipoTurnoId,
+      farmaciaId,
+    },
+  });
+
+  if (!tipo) {
+    throw new BadRequestException('Tipo de turno inválido');
+  }
+
+  return this.crearTurno(
+    farmaciaId,
+    tipoTurnoId,
+    idempotencyKey,
+  );
 }
 }

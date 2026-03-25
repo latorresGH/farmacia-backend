@@ -94,4 +94,14 @@ export declare class TurnosService {
         horaCreacion: Date;
         horaLlamado: Date | null;
     } | null>;
+    crearTurnoPublico(farmaciaId: number, tipoTurnoId: number, idempotencyKey: string): Promise<{
+        id: number;
+        farmaciaId: number;
+        numero: number;
+        codigo: string;
+        estado: import("@prisma/client").$Enums.EstadoTurno;
+        tipoTurnoId: number;
+        horaCreacion: Date;
+        horaLlamado: Date | null;
+    } | null>;
 }

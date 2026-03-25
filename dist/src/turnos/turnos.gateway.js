@@ -29,16 +29,30 @@ let TurnosGateway = class TurnosGateway {
             const payload = this.jwtService.verify(token);
             client.data.user = payload;
             client.join(`farmacia_${payload.farmaciaId}`);
-            console.log('👤 Cliente en room:', `farmacia_${payload.farmaciaId}`);
         }
         catch (error) {
-            console.log('❌ ERROR WS:', error.message);
             client.disconnect();
         }
     }
+    emitirTurnoCreado(turno) {
+        this.server
+            .to(`farmacia_${turno.farmaciaId}`)
+            .emit('turno_creado', turno);
+    }
     emitirTurnoLlamado(turno) {
-        console.log('🔥 EMITIENDO A:', `farmacia_${turno.farmaciaId}`);
-        this.server.to(`farmacia_${turno.farmaciaId}`).emit('turno_llamado', turno);
+        this.server
+            .to(`farmacia_${turno.farmaciaId}`)
+            .emit('turno_llamado', turno);
+    }
+    emitirTurnoFinalizado(turno) {
+        this.server
+            .to(`farmacia_${turno.farmaciaId}`)
+            .emit('turno_finalizado', turno);
+    }
+    emitirTurnoCancelado(turno) {
+        this.server
+            .to(`farmacia_${turno.farmaciaId}`)
+            .emit('turno_cancelado', turno);
     }
 };
 exports.TurnosGateway = TurnosGateway;

@@ -28,9 +28,14 @@ let TurnosService = class TurnosService {
         }
         const hoy = new Date();
         hoy.setHours(0, 0, 0, 0);
-        return this.prisma.$transaction(async (tx) => {
+        const turno = await this.prisma.$transaction(async (tx) => {
             const existingKey = await tx.idempotencyKey.findUnique({
-                where: { key: idempotencyKey },
+                where: {
+                    key_farmaciaId: {
+                        key: idempotencyKey,
+                        farmaciaId,
+                    },
+                },
                 include: { turno: true },
             });
             if (existingKey) {
@@ -81,6 +86,8 @@ let TurnosService = class TurnosService {
             });
             return turno;
         });
+        this.gateway.emitirTurnoCreado(turno);
+        return turno;
     }
     async obtenerTurnos(farmaciaId, estado) {
         return this.prisma.turno.findMany({
@@ -121,47 +128,43 @@ let TurnosService = class TurnosService {
         if (!turno) {
             throw new common_1.NotFoundException('Turno no encontrado');
         }
-        return this.prisma.turno.update({
+        const updated = await this.prisma.turno.update({
             where: { id: turnoId },
             data: {
                 estado: client_1.EstadoTurno.LLAMADO,
                 horaLlamado: new Date(),
             },
         });
+        this.gateway.emitirTurnoLlamado(updated);
+        return updated;
     }
     async finalizarTurno(turnoId, farmaciaId) {
-        const turno = await this.prisma.turno.findUnique({
-            where: {
-                id: turnoId,
-                farmaciaId,
-            },
+        const turno = await this.prisma.turno.findFirst({
+            where: { id: turnoId, farmaciaId },
         });
         if (!turno) {
             throw new common_1.NotFoundException('Turno no encontrado');
         }
-        return this.prisma.turno.update({
+        const updated = await this.prisma.turno.update({
             where: { id: turnoId },
-            data: {
-                estado: client_1.EstadoTurno.ATENDIDO,
-            },
+            data: { estado: client_1.EstadoTurno.ATENDIDO },
         });
+        this.gateway.emitirTurnoFinalizado(updated);
+        return updated;
     }
     async cancelarTurno(turnoId, farmaciaId) {
-        const turno = await this.prisma.turno.findUnique({
-            where: {
-                id: turnoId,
-                farmaciaId,
-            },
+        const turno = await this.prisma.turno.findFirst({
+            where: { id: turnoId, farmaciaId },
         });
         if (!turno) {
             throw new common_1.NotFoundException('Turno no encontrado');
         }
-        return this.prisma.turno.update({
+        const updated = await this.prisma.turno.update({
             where: { id: turnoId },
-            data: {
-                estado: client_1.EstadoTurno.CANCELADO,
-            },
+            data: { estado: client_1.EstadoTurno.CANCELADO },
         });
+        this.gateway.emitirTurnoCancelado(updated);
+        return updated;
     }
     async turnoActual(farmaciaId) {
         return this.prisma.turno.findFirst({
@@ -209,6 +212,21 @@ let TurnosService = class TurnosService {
         });
         this.gateway.emitirTurnoLlamado(resultado);
         return resultado;
+    }
+    async crearTurnoPublico(farmaciaId, tipoTurnoId, idempotencyKey) {
+        if (!farmaciaId || !tipoTurnoId) {
+            throw new common_2.BadRequestException('Datos inválidos');
+        }
+        const tipo = await this.prisma.tipoTurno.findFirst({
+            where: {
+                id: tipoTurnoId,
+                farmaciaId,
+            },
+        });
+        if (!tipo) {
+            throw new common_2.BadRequestException('Tipo de turno inválido');
+        }
+        return this.crearTurno(farmaciaId, tipoTurnoId, idempotencyKey);
     }
 };
 exports.TurnosService = TurnosService;

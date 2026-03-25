@@ -6,5 +6,8 @@ export declare class TurnosGateway implements OnGatewayConnection {
     server: Server;
     constructor(jwtService: JwtService);
     handleConnection(client: Socket): Promise<void>;
+    emitirTurnoCreado(turno: any): void;
     emitirTurnoLlamado(turno: any): void;
+    emitirTurnoFinalizado(turno: any): void;
+    emitirTurnoCancelado(turno: any): void;
 }
