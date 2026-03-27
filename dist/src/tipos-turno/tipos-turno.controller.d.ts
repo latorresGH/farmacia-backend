@@ -31,6 +31,14 @@ export declare class TiposTurnoController {
         duracionMin: number;
         activo: boolean;
     }>;
+    listarPublico(): Promise<{
+        id: number;
+        farmaciaId: number;
+        nombre: string;
+        prefijo: string;
+        duracionMin: number;
+        activo: boolean;
+    }[]>;
     actualizarTipo(id: number, body: {
         nombre?: string;
         prefijo?: string;

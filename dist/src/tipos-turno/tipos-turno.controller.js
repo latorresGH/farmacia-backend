@@ -29,6 +29,10 @@ let TiposTurnoController = class TiposTurnoController {
     async obtenerTipo(id) {
         return this.tiposService.obtenerTipo(id);
     }
+    async listarPublico() {
+        const farmaciaId = 1;
+        return this.tiposService.obtenerTipos(farmaciaId);
+    }
     async actualizarTipo(id, body) {
         return this.tiposService.actualizarTipo(id, body);
     }
@@ -58,6 +62,12 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], TiposTurnoController.prototype, "obtenerTipo", null);
+__decorate([
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], TiposTurnoController.prototype, "listarPublico", null);
 __decorate([
     (0, common_1.Patch)(':id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
