@@ -15,7 +15,7 @@ export declare class TurnosService {
         horaCreacion: Date;
         horaLlamado: Date | null;
     } | null>;
-    obtenerTurnos(farmaciaId: number, estado?: EstadoTurno): Promise<({
+    obtenerTurnos(farmaciaId: number, estado?: EstadoTurno, tipoTurnoId?: number): Promise<({
         tipoTurno: {
             id: number;
             farmaciaId: number;

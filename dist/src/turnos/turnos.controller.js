@@ -37,9 +37,10 @@ let TurnosController = class TurnosController {
         const farmaciaId = req.user.farmaciaId;
         return this.turnosService.listarTurnosHoy(farmaciaId);
     }
-    async obtenerTodos(req, estado) {
+    async obtenerTodos(req, estado, tipoTurnoId) {
         const farmaciaId = req.user.farmaciaId;
-        return this.turnosService.obtenerTurnos(farmaciaId, estado);
+        const tipoId = tipoTurnoId ? Number(tipoTurnoId) : undefined;
+        return this.turnosService.obtenerTurnos(farmaciaId, estado, tipoId);
     }
     async llamarTurno(req, id) {
         const farmaciaId = req.user.farmaciaId;
@@ -83,8 +84,9 @@ __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Query)('estado')),
+    __param(2, (0, common_1.Query)('tipoTurnoId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [Object, String, String]),
     __metadata("design:returntype", Promise)
 ], TurnosController.prototype, "obtenerTodos", null);
 __decorate([

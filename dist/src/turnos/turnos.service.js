@@ -89,17 +89,18 @@ let TurnosService = class TurnosService {
         this.gateway.emitirTurnoCreado(turno);
         return turno;
     }
-    async obtenerTurnos(farmaciaId, estado) {
+    async obtenerTurnos(farmaciaId, estado, tipoTurnoId) {
         return this.prisma.turno.findMany({
             where: {
                 farmaciaId,
                 estado,
+                ...(tipoTurnoId && { tipoTurnoId }),
             },
             include: {
                 tipoTurno: true,
             },
             orderBy: {
-                horaCreacion: 'desc',
+                horaCreacion: 'asc',
             },
         });
     }

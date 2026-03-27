@@ -59,10 +59,13 @@ export class TurnosController {
   async obtenerTodos(
     @Req() req: Request,
     @Query('estado') estado?: EstadoTurno,
+    @Query('tipoTurnoId') tipoTurnoId?: string,
   ) {
     const farmaciaId = (req as any).user.farmaciaId;
 
-    return this.turnosService.obtenerTurnos(farmaciaId, estado);
+    const tipoId = tipoTurnoId ? Number(tipoTurnoId) : undefined;
+
+    return this.turnosService.obtenerTurnos(farmaciaId, estado, tipoId);
   }
 
   // ✅ Llamar turno
@@ -82,7 +85,8 @@ export class TurnosController {
   @Patch(':id/finalizar')
   async finalizarTurno(
     @Req() req: Request,
-    @Param('id', ParseIntPipe) id: number) {
+    @Param('id', ParseIntPipe) id: number,
+  ) {
     const farmaciaId = (req as any).user.farmaciaId;
 
     return this.turnosService.finalizarTurno(id, farmaciaId);
@@ -93,7 +97,8 @@ export class TurnosController {
   @Patch(':id/cancelar')
   async cancelarTurno(
     @Req() req: Request,
-    @Param('id', ParseIntPipe) id: number) {
+    @Param('id', ParseIntPipe) id: number,
+  ) {
     const farmaciaId = (req as any).user.farmaciaId;
 
     return this.turnosService.cancelarTurno(id, farmaciaId);

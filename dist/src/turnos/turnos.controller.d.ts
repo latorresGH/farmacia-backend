@@ -26,7 +26,7 @@ export declare class TurnosController {
         horaCreacion: Date;
         horaLlamado: Date | null;
     }[]>;
-    obtenerTodos(req: Request, estado?: EstadoTurno): Promise<({
+    obtenerTodos(req: Request, estado?: EstadoTurno, tipoTurnoId?: string): Promise<({
         tipoTurno: {
             id: number;
             farmaciaId: number;
