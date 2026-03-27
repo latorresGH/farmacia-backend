@@ -62,6 +62,7 @@ let AuthService = class AuthService {
                 email: data.email,
                 password: hashed,
                 farmaciaId: data.farmaciaId,
+                rol: 'ADMIN',
             },
         });
         return user;

@@ -40,6 +40,9 @@ async function bootstrap() {
     dotenv.config();
     console.log('JWT_SECRET:', process.env.JWT_SECRET);
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    app.enableCors({
+        origin: '*',
+    });
     await app.listen(process.env.PORT ?? 3005);
 }
 bootstrap();
