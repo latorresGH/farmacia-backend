@@ -61,8 +61,14 @@ let AuthService = class AuthService {
                 nombre: data.nombre,
                 email: data.email,
                 password: hashed,
-                farmaciaId: data.farmaciaId,
                 rol: 'ADMIN',
+            },
+            select: {
+                id: true,
+                nombre: true,
+                email: true,
+                rol: true,
+                createdAt: true,
             },
         });
         return user;
@@ -78,7 +84,6 @@ let AuthService = class AuthService {
             throw new common_1.UnauthorizedException('Credenciales inválidas');
         const token = this.jwt.sign({
             userId: user.id,
-            farmaciaId: user.farmaciaId,
             rol: user.rol,
         });
         return { access_token: token };

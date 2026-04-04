@@ -4,11 +4,9 @@ export declare class AuthController {
     constructor(auth: AuthService);
     register(body: any): Promise<{
         id: number;
-        farmaciaId: number;
-        createdAt: Date;
         nombre: string;
+        createdAt: Date;
         email: string;
-        password: string;
         rol: import("@prisma/client").$Enums.Rol;
     }>;
     login(body: any): Promise<{

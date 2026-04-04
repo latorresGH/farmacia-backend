@@ -16,7 +16,9 @@ import { TurnosService } from './turnos.service';
 import { EstadoTurno } from '@prisma/client';
 import { CrearTurnoDto } from './dtos/CrearTurnoDto';
 import { LlamarSiguienteDto } from './dtos/LlamarSiguienteDto';
+import { DerivarTurnoDto } from './dtos/DerivarTurnoDto';
 import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
+import { PrismaService } from '../prisma/prisma.service';
 import type { Request } from 'express';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
@@ -24,9 +26,11 @@ import { RolesGuard } from '../auth/roles.guard';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('turnos')
 export class TurnosController {
-  constructor(private readonly turnosService: TurnosService) {}
+  constructor(
+    private readonly turnosService: TurnosService,
+    private readonly prisma: PrismaService,
+  ) {}
 
-  // ✅ Crear turno
   @Post()
   async crearTurno(
     @Req() req: Request,
@@ -37,87 +41,102 @@ export class TurnosController {
       throw new BadRequestException('Idempotency-Key header is required');
     }
 
-    const farmaciaId = (req as any).user.farmaciaId;
-
-    return this.turnosService.crearTurno(
-      farmaciaId,
-      dto.tipoTurnoId,
-      idempotencyKey,
-    );
+    return this.turnosService.crearTurno(dto.tipoTurnoId, idempotencyKey);
   }
 
-  // ✅ Listar turnos de hoy
   @Get('hoy')
-  async listarHoy(@Req() req: Request) {
-    const farmaciaId = (req as any).user.farmaciaId;
-
-    return this.turnosService.listarTurnosHoy(farmaciaId);
+  async listarHoy() {
+    return this.turnosService.listarTurnosHoy();
   }
 
-  // ✅ Obtener todos
   @Get()
   async obtenerTodos(
-    @Req() req: Request,
     @Query('estado') estado?: EstadoTurno,
     @Query('tipoTurnoId') tipoTurnoId?: string,
   ) {
-    const farmaciaId = (req as any).user.farmaciaId;
-
     const tipoId = tipoTurnoId ? Number(tipoTurnoId) : undefined;
-
-    return this.turnosService.obtenerTurnos(farmaciaId, estado, tipoId);
+    return this.turnosService.obtenerTurnos(estado, tipoId);
   }
 
-  // ✅ Llamar turno
   @Roles('EMPLEADO', 'ADMIN')
   @Patch(':id/llamar')
   async llamarTurno(
     @Req() req: Request,
     @Param('id', ParseIntPipe) id: number,
   ) {
-    const farmaciaId = (req as any).user.farmaciaId;
-
-    return this.turnosService.llamarTurno(id, farmaciaId);
+    const user = (req as any).user;
+    const usuario = await this.prisma.usuario.findUnique({
+      where: { id: user.userId },
+      select: { cajaId: true },
+    });
+    return this.turnosService.llamarTurno(
+      id,
+      user?.userId,
+      usuario?.cajaId ?? undefined,
+    );
   }
 
-  // ✅ Finalizar turno
+  @Roles('EMPLEADO', 'ADMIN')
+  @Patch(':id/derivar')
+  async derivarTurno(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: DerivarTurnoDto,
+  ) {
+    return this.turnosService.derivarTurno(id, dto.empleadoId);
+  }
+
+  @Roles('EMPLEADO', 'ADMIN')
+  @Patch(':id/iniciar')
+  async iniciarAtencion(
+    @Req() req: Request,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    const user = (req as any).user;
+    const usuario = await this.prisma.usuario.findUnique({
+      where: { id: user.userId },
+      select: { cajaId: true },
+    });
+    return this.turnosService.iniciarAtencion(
+      id,
+      user?.userId,
+      usuario?.cajaId ?? undefined,
+    );
+  }
+
   @Roles('EMPLEADO', 'ADMIN')
   @Patch(':id/finalizar')
-  async finalizarTurno(
-    @Req() req: Request,
-    @Param('id', ParseIntPipe) id: number,
-  ) {
-    const farmaciaId = (req as any).user.farmaciaId;
-
-    return this.turnosService.finalizarTurno(id, farmaciaId);
+  async finalizarTurno(@Param('id', ParseIntPipe) id: number) {
+    return this.turnosService.finalizarTurno(id);
   }
 
-  // ✅ Cancelar turno
   @Roles('ADMIN')
   @Patch(':id/cancelar')
-  async cancelarTurno(
-    @Req() req: Request,
-    @Param('id', ParseIntPipe) id: number,
-  ) {
-    const farmaciaId = (req as any).user.farmaciaId;
-
-    return this.turnosService.cancelarTurno(id, farmaciaId);
+  async cancelarTurno(@Param('id', ParseIntPipe) id: number) {
+    return this.turnosService.cancelarTurno(id);
   }
 
-  // ✅ Turno actual
   @Get('actual')
-  async turnoActual(@Req() req: Request) {
-    const farmaciaId = (req as any).user.farmaciaId;
-
-    return this.turnosService.turnoActual(farmaciaId);
+  async turnoActual() {
+    return this.turnosService.turnoActual();
   }
 
-  // ✅ Llamar siguiente
   @Roles('EMPLEADO', 'ADMIN')
   @Post('siguiente')
   async llamarSiguiente(@Req() req: Request, @Body() dto: LlamarSiguienteDto) {
-    const farmaciaId = (req as any).user.farmaciaId;
+    const user = (req as any).user;
+    const usuario = await this.prisma.usuario.findUnique({
+      where: { id: user.userId },
+      select: { cajaId: true },
+    });
+    return this.turnosService.llamarSiguiente(
+      dto.tipoTurnoId,
+      user?.userId,
+      usuario?.cajaId ?? undefined,
+    );
+  }
 
-    return this.turnosService.llamarSiguiente(farmaciaId, dto.tipoTurnoId);
+  @Get(':id/estadisticas')
+  async obtenerEstadisticas(@Param('id', ParseIntPipe) id: number) {
+    return this.turnosService.obtenerEstadisticasTurno(id);
   }
 }

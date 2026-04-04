@@ -25,8 +25,7 @@ let TurnosPublicController = class TurnosPublicController {
         if (!idempotencyKey) {
             throw new common_1.BadRequestException('Idempotency-Key requerido');
         }
-        const farmaciaId = 1;
-        return this.turnosService.crearTurnoPublico(farmaciaId, dto.tipoTurnoId, idempotencyKey);
+        return this.turnosService.crearTurnoPublico(dto.tipoTurnoId, idempotencyKey);
     }
 };
 exports.TurnosPublicController = TurnosPublicController;

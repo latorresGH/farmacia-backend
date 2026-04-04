@@ -1,11 +1,6 @@
-import { IsInt } from 'class-validator'
+import { IsInt } from 'class-validator';
 
 export class CrearTurnoDto {
-
   @IsInt()
-  farmaciaId: number
-
-  @IsInt()
-  tipoTurnoId: number
-
+  tipoTurnoId: number;
 }

@@ -21,10 +21,7 @@ export class TurnosPublicController {
       throw new BadRequestException('Idempotency-Key requerido');
     }
 
-    const farmaciaId = 1; // 👈 después lo centralizamos
-
     return this.turnosService.crearTurnoPublico(
-      farmaciaId,
       dto.tipoTurnoId,
       idempotencyKey,
     );

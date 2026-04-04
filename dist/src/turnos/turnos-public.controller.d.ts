@@ -5,12 +5,16 @@ export declare class TurnosPublicController {
     constructor(turnosService: TurnosService);
     crearTurnoPublico(idempotencyKey: string, dto: CrearTurnoDto): Promise<{
         id: number;
-        farmaciaId: number;
         numero: number;
         codigo: string;
         estado: import("@prisma/client").$Enums.EstadoTurno;
         tipoTurnoId: number;
+        duracionEstimada: number;
         horaCreacion: Date;
         horaLlamado: Date | null;
+        horaInicioAtencion: Date | null;
+        horaFinAtencion: Date | null;
+        empleadoId: number | null;
+        cajaId: number | null;
     } | null>;
 }

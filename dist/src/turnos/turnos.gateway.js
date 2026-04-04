@@ -28,31 +28,30 @@ let TurnosGateway = class TurnosGateway {
             }
             const payload = this.jwtService.verify(token);
             client.data.user = payload;
-            client.join(`farmacia_${payload.farmaciaId}`);
+            client.join('turnos');
+            console.log('🟢 CONNECT:', client.id);
         }
         catch (error) {
             client.disconnect();
         }
     }
     emitirTurnoCreado(turno) {
-        this.server
-            .to(`farmacia_${turno.farmaciaId}`)
-            .emit('turno_creado', turno);
+        this.server.to('turnos').emit('turno_creado', turno);
     }
     emitirTurnoLlamado(turno) {
-        this.server
-            .to(`farmacia_${turno.farmaciaId}`)
-            .emit('turno_llamado', turno);
+        this.server.to('turnos').emit('turno_llamado', turno);
+    }
+    emitirTurnoDerivado(turno) {
+        this.server.to('turnos').emit('turno_derivado', turno);
+    }
+    emitirTurnoEnAtencion(turno) {
+        this.server.to('turnos').emit('turno_en_atencion', turno);
     }
     emitirTurnoFinalizado(turno) {
-        this.server
-            .to(`farmacia_${turno.farmaciaId}`)
-            .emit('turno_finalizado', turno);
+        this.server.to('turnos').emit('turno_finalizado', turno);
     }
     emitirTurnoCancelado(turno) {
-        this.server
-            .to(`farmacia_${turno.farmaciaId}`)
-            .emit('turno_cancelado', turno);
+        this.server.to('turnos').emit('turno_cancelado', turno);
     }
 };
 exports.TurnosGateway = TurnosGateway;

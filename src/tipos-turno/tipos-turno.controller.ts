@@ -14,7 +14,6 @@ import { TiposTurnoService } from './tipos-turno.service';
 export class TiposTurnoController {
   constructor(private readonly tiposService: TiposTurnoService) {}
 
-  // ✅ Crear tipo
   @Post()
   async crearTipo(
     @Body()
@@ -22,32 +21,21 @@ export class TiposTurnoController {
       nombre: string;
       prefijo: string;
       duracionMin?: number;
-      farmaciaId: number;
     },
   ) {
     return this.tiposService.crearTipoTurno(body);
   }
 
-  // ✅ Listar tipos por farmacia
-  @Get(':farmaciaId')
-  async obtenerTipos(@Param('farmaciaId', ParseIntPipe) farmaciaId: number) {
-    return this.tiposService.obtenerTipos(farmaciaId);
+  @Get()
+  async listarPublico() {
+    return this.tiposService.obtenerTipos();
   }
 
-  // ✅ Obtener uno
   @Get('detalle/:id')
   async obtenerTipo(@Param('id', ParseIntPipe) id: number) {
     return this.tiposService.obtenerTipo(id);
   }
-  //Listar los tipos
-  @Get()
-  async listarPublico() {
-    const farmaciaId = 1; // 👈 hardcode por ahora
 
-    return this.tiposService.obtenerTipos(farmaciaId);
-  }
-
-  // ✅ Actualizar
   @Patch(':id')
   async actualizarTipo(
     @Param('id', ParseIntPipe) id: number,
@@ -61,7 +49,6 @@ export class TiposTurnoController {
     return this.tiposService.actualizarTipo(id, body);
   }
 
-  // ✅ Eliminar
   @Delete(':id')
   async eliminarTipo(@Param('id', ParseIntPipe) id: number) {
     return this.tiposService.eliminarTipo(id);

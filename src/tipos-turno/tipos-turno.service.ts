@@ -6,16 +6,13 @@ import { BadRequestException } from '@nestjs/common';
 export class TiposTurnoService {
   constructor(private prisma: PrismaService) {}
 
-  // ✅ Crear tipo de turno
   async crearTipoTurno(data: {
     nombre: string;
     prefijo: string;
     duracionMin?: number;
-    farmaciaId: number;
   }) {
     const existe = await this.prisma.tipoTurno.findFirst({
       where: {
-        farmaciaId: data.farmaciaId,
         prefijo: data.prefijo,
       },
     });
@@ -29,23 +26,19 @@ export class TiposTurnoService {
         nombre: data.nombre,
         prefijo: data.prefijo,
         duracionMin: data.duracionMin ?? 10,
-        farmaciaId: data.farmaciaId,
       },
     });
   }
 
-  // ✅ Obtener todos los tipos de una farmacia
-  async obtenerTipos(farmaciaId: number) {
+  async obtenerTipos() {
     return this.prisma.tipoTurno.findMany({
       where: {
-        farmaciaId,
         activo: true,
       },
       orderBy: { id: 'asc' },
     });
   }
 
-  // ✅ Obtener uno
   async obtenerTipo(id: number) {
     const tipo = await this.prisma.tipoTurno.findUnique({
       where: { id },
@@ -58,7 +51,6 @@ export class TiposTurnoService {
     return tipo;
   }
 
-  // ✅ Actualizar
   async actualizarTipo(
     id: number,
     data: {
@@ -81,7 +73,6 @@ export class TiposTurnoService {
     });
   }
 
-  // ✅ Eliminar
   async eliminarTipo(id: number) {
     const tipo = await this.prisma.tipoTurno.findUnique({
       where: { id },

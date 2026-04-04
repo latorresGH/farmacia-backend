@@ -2,7 +2,6 @@ import {
   WebSocketGateway,
   WebSocketServer,
   OnGatewayConnection,
-  ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
@@ -26,38 +25,35 @@ export class TurnosGateway implements OnGatewayConnection {
       }
 
       const payload = this.jwtService.verify(token);
-
       client.data.user = payload;
-
-      client.join(`farmacia_${payload.farmaciaId}`);
+      client.join('turnos');
+      console.log('🟢 CONNECT:', client.id);
     } catch (error) {
       client.disconnect();
     }
   }
 
-  // 🔥 EVENTOS
-
   emitirTurnoCreado(turno: any) {
-    this.server
-      .to(`farmacia_${turno.farmaciaId}`)
-      .emit('turno_creado', turno);
+    this.server.to('turnos').emit('turno_creado', turno);
   }
 
   emitirTurnoLlamado(turno: any) {
-    this.server
-      .to(`farmacia_${turno.farmaciaId}`)
-      .emit('turno_llamado', turno);
+    this.server.to('turnos').emit('turno_llamado', turno);
+  }
+
+  emitirTurnoDerivado(turno: any) {
+    this.server.to('turnos').emit('turno_derivado', turno);
+  }
+
+  emitirTurnoEnAtencion(turno: any) {
+    this.server.to('turnos').emit('turno_en_atencion', turno);
   }
 
   emitirTurnoFinalizado(turno: any) {
-    this.server
-      .to(`farmacia_${turno.farmaciaId}`)
-      .emit('turno_finalizado', turno);
+    this.server.to('turnos').emit('turno_finalizado', turno);
   }
 
   emitirTurnoCancelado(turno: any) {
-    this.server
-      .to(`farmacia_${turno.farmaciaId}`)
-      .emit('turno_cancelado', turno);
+    this.server.to('turnos').emit('turno_cancelado', turno);
   }
 }

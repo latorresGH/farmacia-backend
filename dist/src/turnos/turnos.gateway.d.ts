@@ -8,6 +8,8 @@ export declare class TurnosGateway implements OnGatewayConnection {
     handleConnection(client: Socket): Promise<void>;
     emitirTurnoCreado(turno: any): void;
     emitirTurnoLlamado(turno: any): void;
+    emitirTurnoDerivado(turno: any): void;
+    emitirTurnoEnAtencion(turno: any): void;
     emitirTurnoFinalizado(turno: any): void;
     emitirTurnoCancelado(turno: any): void;
 }

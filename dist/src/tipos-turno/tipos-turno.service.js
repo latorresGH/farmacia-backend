@@ -21,7 +21,6 @@ let TiposTurnoService = class TiposTurnoService {
     async crearTipoTurno(data) {
         const existe = await this.prisma.tipoTurno.findFirst({
             where: {
-                farmaciaId: data.farmaciaId,
                 prefijo: data.prefijo,
             },
         });
@@ -33,14 +32,12 @@ let TiposTurnoService = class TiposTurnoService {
                 nombre: data.nombre,
                 prefijo: data.prefijo,
                 duracionMin: data.duracionMin ?? 10,
-                farmaciaId: data.farmaciaId,
             },
         });
     }
-    async obtenerTipos(farmaciaId) {
+    async obtenerTipos() {
         return this.prisma.tipoTurno.findMany({
             where: {
-                farmaciaId,
                 activo: true,
             },
             orderBy: { id: 'asc' },

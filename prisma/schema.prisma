@@ -1,8 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,102 +9,100 @@ datasource db {
   provider = "postgresql"
 }
 
-model Farmacia {
-  id        Int       @id @default(autoincrement())
-  nombre    String
-  direccion String?
-  telefono  String?
-  email     String?
-  createdAt DateTime  @default(now())
+model Usuario {
+  id       Int      @id @default(autoincrement())
+  nombre   String
+  email    String   @unique
+  password String
+  rol      Rol      @default(EMPLEADO)
 
-  usuarios  Usuario[]
-  turnos    Turno[]
-  tipos     TipoTurno[]
-  contadores ContadorTurno[]
-  idempotencyKeys IdempotencyKey[]
+  cajaId Int?
+  caja   Caja?  @relation(fields: [cajaId], references: [id])
+
+  turnosAsignados Turno[] @relation("EmpleadoToTurno")
+
+  createdAt DateTime @default(now())
 }
 
-model Usuario {
-  id        Int      @id @default(autoincrement())
-  nombre    String
-  email     String   @unique
-  password  String
-  rol       Rol      @default(EMPLEADO)
+model Caja {
+  id      Int     @id @default(autoincrement())
+  nombre  String
+  activo  Boolean @default(true)
 
-  farmaciaId Int
-  farmacia   Farmacia @relation(fields: [farmaciaId], references: [id])
+  usuarios Usuario[]
+  turnos   Turno[]
 
   createdAt DateTime @default(now())
 }
 
 model TipoTurno {
-  id          Int      @id @default(autoincrement())
+  id          Int    @id @default(autoincrement())
   nombre      String
-  prefijo     String   @default("T")
-  duracionMin Int      @default(10)
+  prefijo     String @default("T")
+  duracionMin Int    @default(10)
+  activo      Boolean @default(true)
 
-  activo      Boolean  @default(true) // 👈 ESTE
-
-  farmaciaId  Int
-  farmacia    Farmacia @relation(fields: [farmaciaId], references: [id])
-
-  turnos      Turno[]
-  contadores  ContadorTurno[]
+  turnos     Turno[]         @relation("TipoTurnoToTurno")
+  contadores ContadorTurno[] @relation("TipoTurnoToContadorTurno")
 }
 
 model Turno {
-  id           Int         @id @default(autoincrement())
+  id     Int         @id @default(autoincrement())
+  numero Int
+  codigo String
+  estado EstadoTurno @default(PENDIENTE)
 
-  numero       Int
-  codigo       String
+  tipoTurnoId Int
+  tipoTurno   TipoTurno @relation("TipoTurnoToTurno", fields: [tipoTurnoId], references: [id])
 
-  estado       EstadoTurno @default(PENDIENTE)
+  duracionEstimada    Int
+  horaCreacion        DateTime  @default(now())
+  horaLlamado         DateTime?
+  horaInicioAtencion  DateTime?
+  horaFinAtencion     DateTime?
 
-  tipoTurnoId  Int
-  tipoTurno    TipoTurno   @relation(fields: [tipoTurnoId], references: [id])
+  empleadoId Int?
+  empleado   Usuario? @relation("EmpleadoToTurno", fields: [empleadoId], references: [id])
 
-  farmaciaId   Int
-  farmacia     Farmacia    @relation(fields: [farmaciaId], references: [id])
+  cajaId Int?
+  caja   Caja?  @relation(fields: [cajaId], references: [id])
 
-  horaCreacion DateTime    @default(now())
-  horaLlamado  DateTime?
-  idempotencyKeys IdempotencyKey[]
+  idempotencyKeys IdempotencyKey[] @relation("TurnoToIdempotencyKey")
+
+  @@index([estado])
+  @@index([tipoTurnoId])
+  @@index([empleadoId])
+  @@index([horaCreacion])
 }
 
 model ContadorTurno {
-  id Int @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
+  fecha        DateTime
+  ultimoNumero Int      @default(0)
 
-  fecha DateTime
-  ultimoNumero Int @default(0)
-
-  farmaciaId Int
   tipoTurnoId Int
 
-  farmacia Farmacia @relation(fields: [farmaciaId], references: [id])
-  tipoTurno TipoTurno @relation(fields: [tipoTurnoId], references: [id])
+  tipoTurno TipoTurno @relation("TipoTurnoToContadorTurno", fields: [tipoTurnoId], references: [id])
 
-  @@unique([farmaciaId, tipoTurnoId, fecha])
+  @@unique([tipoTurnoId, fecha])
 }
 
 model IdempotencyKey {
-  id Int @id @default(autoincrement())
-
-  key String
+  id     Int     @id @default(autoincrement())
+  key    String
 
   turnoId Int?
-  turno Turno? @relation(fields: [turnoId], references: [id])
-
-  farmaciaId Int
-  farmacia Farmacia @relation(fields: [farmaciaId], references: [id])
+  turno   Turno?  @relation("TurnoToIdempotencyKey", fields: [turnoId], references: [id])
 
   createdAt DateTime @default(now())
 
-  @@unique([key, farmaciaId]) // 👈 CLAVE
+  @@unique([key])
 }
 
 enum EstadoTurno {
   PENDIENTE
   LLAMADO
+  EN_ATENCION
   ATENDIDO
   CANCELADO
 }

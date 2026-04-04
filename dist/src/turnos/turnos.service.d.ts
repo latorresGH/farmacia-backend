@@ -5,103 +5,334 @@ export declare class TurnosService {
     private prisma;
     private gateway;
     constructor(prisma: PrismaService, gateway: TurnosGateway);
-    crearTurno(farmaciaId: number, tipoTurnoId: number, idempotencyKey: string): Promise<{
+    crearTurno(tipoTurnoId: number, idempotencyKey: string): Promise<{
         id: number;
-        farmaciaId: number;
         numero: number;
         codigo: string;
         estado: import("@prisma/client").$Enums.EstadoTurno;
         tipoTurnoId: number;
+        duracionEstimada: number;
         horaCreacion: Date;
         horaLlamado: Date | null;
+        horaInicioAtencion: Date | null;
+        horaFinAtencion: Date | null;
+        empleadoId: number | null;
+        cajaId: number | null;
     } | null>;
-    obtenerTurnos(farmaciaId: number, estado?: EstadoTurno, tipoTurnoId?: number): Promise<({
+    obtenerTurnos(estado?: EstadoTurno, tipoTurnoId?: number): Promise<({
+        caja: {
+            id: number;
+            nombre: string;
+        } | null;
         tipoTurno: {
             id: number;
-            farmaciaId: number;
             nombre: string;
             prefijo: string;
             duracionMin: number;
             activo: boolean;
         };
+        empleado: {
+            id: number;
+            nombre: string;
+        } | null;
     } & {
         id: number;
-        farmaciaId: number;
         numero: number;
         codigo: string;
         estado: import("@prisma/client").$Enums.EstadoTurno;
         tipoTurnoId: number;
+        duracionEstimada: number;
         horaCreacion: Date;
         horaLlamado: Date | null;
+        horaInicioAtencion: Date | null;
+        horaFinAtencion: Date | null;
+        empleadoId: number | null;
+        cajaId: number | null;
     })[]>;
-    listarTurnosHoy(farmaciaId: number): Promise<{
+    listarTurnosHoy(): Promise<({
+        caja: {
+            id: number;
+            nombre: string;
+        } | null;
+        tipoTurno: {
+            id: number;
+            nombre: string;
+            prefijo: string;
+            duracionMin: number;
+            activo: boolean;
+        };
+        empleado: {
+            id: number;
+            nombre: string;
+        } | null;
+    } & {
         id: number;
-        farmaciaId: number;
         numero: number;
         codigo: string;
         estado: import("@prisma/client").$Enums.EstadoTurno;
         tipoTurnoId: number;
+        duracionEstimada: number;
         horaCreacion: Date;
         horaLlamado: Date | null;
-    }[]>;
-    llamarTurno(turnoId: number, farmaciaId: number): Promise<{
+        horaInicioAtencion: Date | null;
+        horaFinAtencion: Date | null;
+        empleadoId: number | null;
+        cajaId: number | null;
+    })[]>;
+    llamarTurno(turnoId: number, empleadoId?: number, cajaId?: number): Promise<{
+        caja: {
+            id: number;
+            nombre: string;
+        } | null;
+        tipoTurno: {
+            id: number;
+            nombre: string;
+            prefijo: string;
+            duracionMin: number;
+            activo: boolean;
+        };
+        empleado: {
+            id: number;
+            nombre: string;
+        } | null;
+    } & {
         id: number;
-        farmaciaId: number;
         numero: number;
         codigo: string;
         estado: import("@prisma/client").$Enums.EstadoTurno;
         tipoTurnoId: number;
+        duracionEstimada: number;
         horaCreacion: Date;
         horaLlamado: Date | null;
+        horaInicioAtencion: Date | null;
+        horaFinAtencion: Date | null;
+        empleadoId: number | null;
+        cajaId: number | null;
     }>;
-    finalizarTurno(turnoId: number, farmaciaId: number): Promise<{
+    derivarTurno(turnoId: number, empleadoId: number): Promise<{
+        caja: {
+            id: number;
+            nombre: string;
+        } | null;
+        tipoTurno: {
+            id: number;
+            nombre: string;
+            prefijo: string;
+            duracionMin: number;
+            activo: boolean;
+        };
+        empleado: {
+            id: number;
+            nombre: string;
+        } | null;
+    } & {
         id: number;
-        farmaciaId: number;
         numero: number;
         codigo: string;
         estado: import("@prisma/client").$Enums.EstadoTurno;
         tipoTurnoId: number;
+        duracionEstimada: number;
         horaCreacion: Date;
         horaLlamado: Date | null;
+        horaInicioAtencion: Date | null;
+        horaFinAtencion: Date | null;
+        empleadoId: number | null;
+        cajaId: number | null;
     }>;
-    cancelarTurno(turnoId: number, farmaciaId: number): Promise<{
+    iniciarAtencion(turnoId: number, empleadoId?: number, cajaId?: number): Promise<{
+        caja: {
+            id: number;
+            nombre: string;
+        } | null;
+        tipoTurno: {
+            id: number;
+            nombre: string;
+            prefijo: string;
+            duracionMin: number;
+            activo: boolean;
+        };
+        empleado: {
+            id: number;
+            nombre: string;
+        } | null;
+    } & {
         id: number;
-        farmaciaId: number;
         numero: number;
         codigo: string;
         estado: import("@prisma/client").$Enums.EstadoTurno;
         tipoTurnoId: number;
+        duracionEstimada: number;
         horaCreacion: Date;
         horaLlamado: Date | null;
+        horaInicioAtencion: Date | null;
+        horaFinAtencion: Date | null;
+        empleadoId: number | null;
+        cajaId: number | null;
     }>;
-    turnoActual(farmaciaId: number): Promise<{
+    finalizarTurno(turnoId: number): Promise<{
+        caja: {
+            id: number;
+            nombre: string;
+        } | null;
+        tipoTurno: {
+            id: number;
+            nombre: string;
+            prefijo: string;
+            duracionMin: number;
+            activo: boolean;
+        };
+        empleado: {
+            id: number;
+            nombre: string;
+        } | null;
+    } & {
         id: number;
-        farmaciaId: number;
         numero: number;
         codigo: string;
         estado: import("@prisma/client").$Enums.EstadoTurno;
         tipoTurnoId: number;
+        duracionEstimada: number;
         horaCreacion: Date;
         horaLlamado: Date | null;
-    } | null>;
-    llamarSiguiente(farmaciaId: number, tipoTurnoId?: number): Promise<{
+        horaInicioAtencion: Date | null;
+        horaFinAtencion: Date | null;
+        empleadoId: number | null;
+        cajaId: number | null;
+    }>;
+    cancelarTurno(turnoId: number): Promise<{
+        caja: {
+            id: number;
+            nombre: string;
+        } | null;
+        tipoTurno: {
+            id: number;
+            nombre: string;
+            prefijo: string;
+            duracionMin: number;
+            activo: boolean;
+        };
+        empleado: {
+            id: number;
+            nombre: string;
+        } | null;
+    } & {
         id: number;
-        farmaciaId: number;
         numero: number;
         codigo: string;
         estado: import("@prisma/client").$Enums.EstadoTurno;
         tipoTurnoId: number;
+        duracionEstimada: number;
         horaCreacion: Date;
         horaLlamado: Date | null;
-    } | null>;
-    crearTurnoPublico(farmaciaId: number, tipoTurnoId: number, idempotencyKey: string): Promise<{
+        horaInicioAtencion: Date | null;
+        horaFinAtencion: Date | null;
+        empleadoId: number | null;
+        cajaId: number | null;
+    }>;
+    turnoActual(): Promise<({
+        caja: {
+            id: number;
+            nombre: string;
+        } | null;
+        tipoTurno: {
+            id: number;
+            nombre: string;
+            prefijo: string;
+            duracionMin: number;
+            activo: boolean;
+        };
+        empleado: {
+            id: number;
+            nombre: string;
+        } | null;
+    } & {
         id: number;
-        farmaciaId: number;
         numero: number;
         codigo: string;
         estado: import("@prisma/client").$Enums.EstadoTurno;
         tipoTurnoId: number;
+        duracionEstimada: number;
         horaCreacion: Date;
         horaLlamado: Date | null;
+        horaInicioAtencion: Date | null;
+        horaFinAtencion: Date | null;
+        empleadoId: number | null;
+        cajaId: number | null;
+    }) | null>;
+    llamarSiguiente(tipoTurnoId?: number, empleadoId?: number, cajaId?: number): Promise<({
+        caja: {
+            id: number;
+            nombre: string;
+        } | null;
+        tipoTurno: {
+            id: number;
+            nombre: string;
+            prefijo: string;
+            duracionMin: number;
+            activo: boolean;
+        };
+        empleado: {
+            id: number;
+            nombre: string;
+        } | null;
+    } & {
+        id: number;
+        numero: number;
+        codigo: string;
+        estado: import("@prisma/client").$Enums.EstadoTurno;
+        tipoTurnoId: number;
+        duracionEstimada: number;
+        horaCreacion: Date;
+        horaLlamado: Date | null;
+        horaInicioAtencion: Date | null;
+        horaFinAtencion: Date | null;
+        empleadoId: number | null;
+        cajaId: number | null;
+    }) | null>;
+    crearTurnoPublico(tipoTurnoId: number, idempotencyKey: string): Promise<{
+        id: number;
+        numero: number;
+        codigo: string;
+        estado: import("@prisma/client").$Enums.EstadoTurno;
+        tipoTurnoId: number;
+        duracionEstimada: number;
+        horaCreacion: Date;
+        horaLlamado: Date | null;
+        horaInicioAtencion: Date | null;
+        horaFinAtencion: Date | null;
+        empleadoId: number | null;
+        cajaId: number | null;
     } | null>;
+    obtenerEstadisticasTurno(turnoId: number): Promise<{
+        tiempoEsperaMinutos: number | null;
+        tiempoAtencionMinutos: number | null;
+        caja: {
+            id: number;
+            nombre: string;
+        } | null;
+        tipoTurno: {
+            id: number;
+            nombre: string;
+            prefijo: string;
+            duracionMin: number;
+            activo: boolean;
+        };
+        empleado: {
+            id: number;
+            nombre: string;
+        } | null;
+        id: number;
+        numero: number;
+        codigo: string;
+        estado: import("@prisma/client").$Enums.EstadoTurno;
+        tipoTurnoId: number;
+        duracionEstimada: number;
+        horaCreacion: Date;
+        horaLlamado: Date | null;
+        horaInicioAtencion: Date | null;
+        horaFinAtencion: Date | null;
+        empleadoId: number | null;
+        cajaId: number | null;
+    }>;
+    private validarEmpleadoEnCaja;
 }

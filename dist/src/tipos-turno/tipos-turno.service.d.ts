@@ -6,18 +6,15 @@ export declare class TiposTurnoService {
         nombre: string;
         prefijo: string;
         duracionMin?: number;
-        farmaciaId: number;
     }): Promise<{
         id: number;
-        farmaciaId: number;
         nombre: string;
         prefijo: string;
         duracionMin: number;
         activo: boolean;
     }>;
-    obtenerTipos(farmaciaId: number): Promise<{
+    obtenerTipos(): Promise<{
         id: number;
-        farmaciaId: number;
         nombre: string;
         prefijo: string;
         duracionMin: number;
@@ -25,7 +22,6 @@ export declare class TiposTurnoService {
     }[]>;
     obtenerTipo(id: number): Promise<{
         id: number;
-        farmaciaId: number;
         nombre: string;
         prefijo: string;
         duracionMin: number;
@@ -37,7 +33,6 @@ export declare class TiposTurnoService {
         duracionMin?: number;
     }): Promise<{
         id: number;
-        farmaciaId: number;
         nombre: string;
         prefijo: string;
         duracionMin: number;
@@ -45,7 +40,6 @@ export declare class TiposTurnoService {
     }>;
     eliminarTipo(id: number): Promise<{
         id: number;
-        farmaciaId: number;
         nombre: string;
         prefijo: string;
         duracionMin: number;

@@ -6,26 +6,8 @@ export declare class TiposTurnoController {
         nombre: string;
         prefijo: string;
         duracionMin?: number;
-        farmaciaId: number;
     }): Promise<{
         id: number;
-        farmaciaId: number;
-        nombre: string;
-        prefijo: string;
-        duracionMin: number;
-        activo: boolean;
-    }>;
-    obtenerTipos(farmaciaId: number): Promise<{
-        id: number;
-        farmaciaId: number;
-        nombre: string;
-        prefijo: string;
-        duracionMin: number;
-        activo: boolean;
-    }[]>;
-    obtenerTipo(id: number): Promise<{
-        id: number;
-        farmaciaId: number;
         nombre: string;
         prefijo: string;
         duracionMin: number;
@@ -33,19 +15,24 @@ export declare class TiposTurnoController {
     }>;
     listarPublico(): Promise<{
         id: number;
-        farmaciaId: number;
         nombre: string;
         prefijo: string;
         duracionMin: number;
         activo: boolean;
     }[]>;
+    obtenerTipo(id: number): Promise<{
+        id: number;
+        nombre: string;
+        prefijo: string;
+        duracionMin: number;
+        activo: boolean;
+    }>;
     actualizarTipo(id: number, body: {
         nombre?: string;
         prefijo?: string;
         duracionMin?: number;
     }): Promise<{
         id: number;
-        farmaciaId: number;
         nombre: string;
         prefijo: string;
         duracionMin: number;
@@ -53,7 +40,6 @@ export declare class TiposTurnoController {
     }>;
     eliminarTipo(id: number): Promise<{
         id: number;
-        farmaciaId: number;
         nombre: string;
         prefijo: string;
         duracionMin: number;
