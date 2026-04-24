@@ -4,68 +4,68 @@ export declare class UsuariosService {
     private prisma;
     constructor(prisma: PrismaService);
     listarEmpleados(): Promise<{
+        id: number;
+        nombre: string;
+        email: string;
+        rol: import("@prisma/client").$Enums.Rol;
+        cajaId: number | null;
+        createdAt: Date;
         caja: {
             id: number;
             nombre: string;
             activo: boolean;
         } | null;
-        id: number;
-        nombre: string;
-        createdAt: Date;
-        cajaId: number | null;
-        email: string;
-        rol: import("@prisma/client").$Enums.Rol;
     }[]>;
     obtenerEmpleado(id: number): Promise<{
+        id: number;
+        nombre: string;
+        email: string;
+        rol: import("@prisma/client").$Enums.Rol;
+        cajaId: number | null;
+        createdAt: Date;
         caja: {
             id: number;
             nombre: string;
             activo: boolean;
         } | null;
-        id: number;
-        nombre: string;
-        createdAt: Date;
-        cajaId: number | null;
-        email: string;
-        rol: import("@prisma/client").$Enums.Rol;
     }>;
     actualizarEmpleado(id: number, data: {
         nombre?: string;
         email?: string;
         rol?: Rol;
     }): Promise<{
+        id: number;
+        nombre: string;
+        email: string;
+        rol: import("@prisma/client").$Enums.Rol;
+        cajaId: number | null;
         caja: {
             id: number;
             nombre: string;
             activo: boolean;
         } | null;
-        id: number;
-        nombre: string;
-        cajaId: number | null;
-        email: string;
-        rol: import("@prisma/client").$Enums.Rol;
     }>;
     asignarCaja(id: number, cajaId: number | null): Promise<{
+        id: number;
+        nombre: string;
+        email: string;
+        rol: import("@prisma/client").$Enums.Rol;
+        cajaId: number | null;
         caja: {
             id: number;
             nombre: string;
             activo: boolean;
         } | null;
+    }>;
+    turnosHoyPorEmpleado(fecha?: Date): Promise<{
         id: number;
         nombre: string;
-        cajaId: number | null;
-        email: string;
         rol: import("@prisma/client").$Enums.Rol;
-    }>;
-    turnosHoyPorEmpleado(): Promise<{
+        cajaId: number | null;
         caja: {
             id: number;
             nombre: string;
         } | null;
-        id: number;
-        nombre: string;
-        cajaId: number | null;
-        rol: import("@prisma/client").$Enums.Rol;
         turnosAsignados: ({
             caja: {
                 id: number;
@@ -74,34 +74,34 @@ export declare class UsuariosService {
             tipoTurno: {
                 id: number;
                 nombre: string;
+                activo: boolean;
                 prefijo: string;
                 duracionMin: number;
-                activo: boolean;
             };
         } & {
             id: number;
+            cajaId: number | null;
+            horaCreacion: Date;
             numero: number;
             codigo: string;
             estado: import("@prisma/client").$Enums.EstadoTurno;
             tipoTurnoId: number;
             duracionEstimada: number;
-            horaCreacion: Date;
             horaLlamado: Date | null;
             horaInicioAtencion: Date | null;
             horaFinAtencion: Date | null;
             empleadoId: number | null;
-            cajaId: number | null;
         })[];
     }[]>;
-    turnosSemanaPorEmpleado(): Promise<{
+    turnosSemanaPorEmpleado(fecha?: Date): Promise<{
+        id: number;
+        nombre: string;
+        rol: import("@prisma/client").$Enums.Rol;
+        cajaId: number | null;
         caja: {
             id: number;
             nombre: string;
         } | null;
-        id: number;
-        nombre: string;
-        cajaId: number | null;
-        rol: import("@prisma/client").$Enums.Rol;
         turnosAsignados: ({
             caja: {
                 id: number;
@@ -110,23 +110,23 @@ export declare class UsuariosService {
             tipoTurno: {
                 id: number;
                 nombre: string;
+                activo: boolean;
                 prefijo: string;
                 duracionMin: number;
-                activo: boolean;
             };
         } & {
             id: number;
+            cajaId: number | null;
+            horaCreacion: Date;
             numero: number;
             codigo: string;
             estado: import("@prisma/client").$Enums.EstadoTurno;
             tipoTurnoId: number;
             duracionEstimada: number;
-            horaCreacion: Date;
             horaLlamado: Date | null;
             horaInicioAtencion: Date | null;
             horaFinAtencion: Date | null;
             empleadoId: number | null;
-            cajaId: number | null;
         })[];
     }[]>;
 }

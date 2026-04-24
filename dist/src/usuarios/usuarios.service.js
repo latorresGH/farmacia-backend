@@ -89,10 +89,12 @@ let UsuariosService = class UsuariosService {
             },
         });
     }
-    async turnosHoyPorEmpleado() {
-        const hoy = new Date();
-        hoy.setHours(0, 0, 0, 0);
-        const empleados = await this.prisma.usuario.findMany({
+    async turnosHoyPorEmpleado(fecha) {
+        const dia = fecha ? new Date(fecha) : new Date();
+        dia.setHours(0, 0, 0, 0);
+        const finDia = new Date(dia);
+        finDia.setHours(23, 59, 59, 999);
+        return this.prisma.usuario.findMany({
             select: {
                 id: true,
                 nombre: true,
@@ -100,7 +102,7 @@ let UsuariosService = class UsuariosService {
                 cajaId: true,
                 caja: { select: { id: true, nombre: true } },
                 turnosAsignados: {
-                    where: { horaCreacion: { gte: hoy } },
+                    where: { horaCreacion: { gte: dia, lte: finDia } },
                     include: {
                         tipoTurno: true,
                         caja: { select: { id: true, nombre: true } },
@@ -110,15 +112,17 @@ let UsuariosService = class UsuariosService {
             },
             orderBy: { id: 'asc' },
         });
-        return empleados;
     }
-    async turnosSemanaPorEmpleado() {
-        const hoy = new Date();
-        hoy.setHours(0, 0, 0, 0);
-        const finSemana = new Date(hoy);
-        finSemana.setDate(hoy.getDate() + 6);
-        finSemana.setHours(23, 59, 59, 999);
-        const empleados = await this.prisma.usuario.findMany({
+    async turnosSemanaPorEmpleado(fecha) {
+        const inicio = fecha ? new Date(fecha) : new Date();
+        inicio.setHours(0, 0, 0, 0);
+        const dia = inicio.getDay();
+        const diff = dia === 0 ? -6 : 1 - dia;
+        inicio.setDate(inicio.getDate() + diff);
+        const fin = new Date(inicio);
+        fin.setDate(inicio.getDate() + 6);
+        fin.setHours(23, 59, 59, 999);
+        return this.prisma.usuario.findMany({
             select: {
                 id: true,
                 nombre: true,
@@ -126,9 +130,7 @@ let UsuariosService = class UsuariosService {
                 cajaId: true,
                 caja: { select: { id: true, nombre: true } },
                 turnosAsignados: {
-                    where: {
-                        horaCreacion: { gte: hoy, lte: finSemana },
-                    },
+                    where: { horaCreacion: { gte: inicio, lte: fin } },
                     include: {
                         tipoTurno: true,
                         caja: { select: { id: true, nombre: true } },
@@ -138,7 +140,6 @@ let UsuariosService = class UsuariosService {
             },
             orderBy: { id: 'asc' },
         });
-        return empleados;
     }
 };
 exports.UsuariosService = UsuariosService;

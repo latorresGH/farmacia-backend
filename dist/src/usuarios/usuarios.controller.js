@@ -26,11 +26,11 @@ let UsuariosController = class UsuariosController {
     listarEmpleados() {
         return this.usuariosService.listarEmpleados();
     }
-    turnosHoy() {
-        return this.usuariosService.turnosHoyPorEmpleado();
+    turnosHoy(fecha) {
+        return this.usuariosService.turnosHoyPorEmpleado(fecha ? new Date(fecha) : undefined);
     }
-    turnosSemana() {
-        return this.usuariosService.turnosSemanaPorEmpleado();
+    turnosSemana(fecha) {
+        return this.usuariosService.turnosSemanaPorEmpleado(fecha ? new Date(fecha) : undefined);
     }
     obtenerEmpleado(id) {
         return this.usuariosService.obtenerEmpleado(id);
@@ -53,15 +53,17 @@ __decorate([
 __decorate([
     (0, roles_decorator_1.Roles)('ADMIN'),
     (0, common_1.Get)('turnos/hoy'),
+    __param(0, (0, common_1.Query)('fecha')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], UsuariosController.prototype, "turnosHoy", null);
 __decorate([
     (0, roles_decorator_1.Roles)('ADMIN'),
     (0, common_1.Get)('turnos/semana'),
+    __param(0, (0, common_1.Query)('fecha')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], UsuariosController.prototype, "turnosSemana", null);
 __decorate([

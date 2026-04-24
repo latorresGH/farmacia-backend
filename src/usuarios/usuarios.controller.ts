@@ -6,6 +6,7 @@ import {
   Body,
   ParseIntPipe,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
@@ -26,15 +27,19 @@ export class UsuariosController {
 
   @Roles('ADMIN')
   @Get('turnos/hoy')
-  turnosHoy() {
-    return this.usuariosService.turnosHoyPorEmpleado();
-  }
+turnosHoy(@Query('fecha') fecha?: string) {
+  return this.usuariosService.turnosHoyPorEmpleado(
+    fecha ? new Date(fecha) : undefined
+  );
+}
 
   @Roles('ADMIN')
   @Get('turnos/semana')
-  turnosSemana() {
-    return this.usuariosService.turnosSemanaPorEmpleado();
-  }
+turnosSemana(@Query('fecha') fecha?: string) {
+  return this.usuariosService.turnosSemanaPorEmpleado(
+    fecha ? new Date(fecha) : undefined
+  );
+}
 
   @Roles('ADMIN')
   @Get(':id')
