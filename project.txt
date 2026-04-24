@@ -352,3 +352,17 @@ Ej:
 * Siguiente:
 
 - Hacer crearTurno público (tablet)
+
+# Instalar dependencias
+npm install
+
+# Migraciones de Prisma
+npx prisma migrate dev --name nombre_migracion   # crear/aplicar migración en dev
+npx prisma migrate deploy                         # aplicar en producción
+npx prisma generate                               # regenerar cliente (sin migrar)
+npx prisma migrate reset                          # resetear todo desde cero ⚠️
+
+# Lanzar el servidor
+npm run start:dev    # desarrollo con hot reload
+npm run start        # normal
+npm run start:prod   # producción

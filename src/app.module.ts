@@ -7,9 +7,10 @@ import { TiposTurnoModule } from './tipos-turno/tipos-turno.module';
 import { CajaModule } from './caja/caja.module';
 import { AuthService } from './auth/auth.service';
 import { JwtStrategy } from './auth/jwt.strategy/jwt.strategy';
+import { UsuariosModule } from './usuarios/usuarios.module';
 
 @Module({
-  imports: [TurnosModule, TiposTurnoModule, AuthModule, CajaModule],
+  imports: [TurnosModule, TiposTurnoModule, AuthModule, CajaModule, UsuariosModule],
   controllers: [AppController],
   providers: [AppService],
 })

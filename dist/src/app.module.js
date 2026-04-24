@@ -14,12 +14,13 @@ const turnos_module_1 = require("./turnos/turnos.module");
 const auth_module_1 = require("./auth/auth.module");
 const tipos_turno_module_1 = require("./tipos-turno/tipos-turno.module");
 const caja_module_1 = require("./caja/caja.module");
+const usuarios_module_1 = require("./usuarios/usuarios.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [turnos_module_1.TurnosModule, tipos_turno_module_1.TiposTurnoModule, auth_module_1.AuthModule, caja_module_1.CajaModule],
+        imports: [turnos_module_1.TurnosModule, tipos_turno_module_1.TiposTurnoModule, auth_module_1.AuthModule, caja_module_1.CajaModule, usuarios_module_1.UsuariosModule],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })
