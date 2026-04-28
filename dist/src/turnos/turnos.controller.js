@@ -65,8 +65,8 @@ let TurnosController = class TurnosController {
     async finalizarTurno(id) {
         return this.turnosService.finalizarTurno(id);
     }
-    async cancelarTurno(id) {
-        return this.turnosService.cancelarTurno(id);
+    async cancelarTurno(id, body) {
+        return this.turnosService.cancelarTurno(id, body?.motivo);
     }
     async turnoActual() {
         return this.turnosService.turnoActual();
@@ -143,11 +143,12 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TurnosController.prototype, "finalizarTurno", null);
 __decorate([
-    (0, roles_decorator_1.Roles)('ADMIN'),
+    (0, roles_decorator_1.Roles)('EMPLEADO', 'ADMIN'),
     (0, common_1.Patch)(':id/cancelar'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
+    __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], TurnosController.prototype, "cancelarTurno", null);
 __decorate([

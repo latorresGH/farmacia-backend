@@ -7,6 +7,8 @@ import {
   ParseIntPipe,
   UseGuards,
   Query,
+  Post,
+  Req,
 } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
@@ -19,29 +21,33 @@ import { Rol } from '@prisma/client';
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
 
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'EMPLEADO')
   @Get()
   listarEmpleados() {
     return this.usuariosService.listarEmpleados();
   }
 
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'EMPLEADO')
   @Get('turnos/hoy')
-turnosHoy(@Query('fecha') fecha?: string) {
-  return this.usuariosService.turnosHoyPorEmpleado(
-    fecha ? new Date(fecha) : undefined
-  );
-}
+  turnosHoy(@Query('fecha') fecha?: string, @Req() req?: any) {
+    return this.usuariosService.turnosHoyPorEmpleado(
+      fecha ? new Date(fecha) : undefined,
+      req.user?.userId,
+      req.user?.rol,
+    );
+  }
 
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'EMPLEADO')
   @Get('turnos/semana')
-turnosSemana(@Query('fecha') fecha?: string) {
-  return this.usuariosService.turnosSemanaPorEmpleado(
-    fecha ? new Date(fecha) : undefined
-  );
-}
+  turnosSemana(@Query('fecha') fecha?: string, @Req() req?: any) {
+    return this.usuariosService.turnosSemanaPorEmpleado(
+      fecha ? new Date(fecha) : undefined,
+      req.user?.userId,
+      req.user?.rol,
+    );
+  }
 
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'EMPLEADO')
   @Get(':id')
   obtenerEmpleado(@Param('id', ParseIntPipe) id: number) {
     return this.usuariosService.obtenerEmpleado(id);
@@ -64,4 +70,39 @@ turnosSemana(@Query('fecha') fecha?: string) {
   ) {
     return this.usuariosService.asignarCaja(id, body.cajaId);
   }
+
+  @Roles('ADMIN')
+  @Post()
+  async crearEmpleado(
+    @Body()
+    body: {
+      nombre: string;
+      email: string;
+      password: string;
+      rol?: Rol;
+    },
+  ) {
+    return this.usuariosService.crearEmpleado(body);
+  }
+
+  @Roles('ADMIN')
+@Patch(':id/desactivar')
+desactivarEmpleado(@Param('id', ParseIntPipe) id: number) {
+  return this.usuariosService.desactivarEmpleado(id);
+}
+
+@Roles('ADMIN')
+@Patch(':id/activar')
+activarEmpleado(@Param('id', ParseIntPipe) id: number) {
+  return this.usuariosService.activarEmpleado(id);
+}
+
+@Roles('ADMIN')
+@Patch(':id/reset-password')
+resetearPassword(
+  @Param('id', ParseIntPipe) id: number,
+  @Body() body: { password: string },
+) {
+  return this.usuariosService.resetearPassword(id, body.password);
+}
 }

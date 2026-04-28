@@ -283,30 +283,28 @@ export class TurnosService {
     return turno;
   }
 
-  async cancelarTurno(turnoId: number) {
-    const turno = await this.prisma.$transaction(async (tx) => {
-      const existing = await tx.turno.findUnique({
-        where: { id: turnoId },
-      });
+  async cancelarTurno(turnoId: number, motivo?: string) {
+  const turno = await this.prisma.$transaction(async (tx) => {
+    const existing = await tx.turno.findUnique({ where: { id: turnoId } });
+    if (!existing) throw new NotFoundException('Turno no encontrado');
 
-      if (!existing) {
-        throw new NotFoundException('Turno no encontrado');
-      }
-
-      return tx.turno.update({
-        where: { id: turnoId },
-        data: { estado: EstadoTurno.CANCELADO },
-        include: {
-          tipoTurno: true,
-          empleado: { select: { id: true, nombre: true } },
-          caja: { select: { id: true, nombre: true } },
-        },
-      });
+    return tx.turno.update({
+      where: { id: turnoId },
+      data: {
+        estado: EstadoTurno.CANCELADO,
+        ...(motivo ? { motivoCancelacion: motivo } : {}),
+      },
+      include: {
+        tipoTurno: true,
+        empleado: { select: { id: true, nombre: true } },
+        caja: { select: { id: true, nombre: true } },
+      },
     });
+  });
 
-    this.gateway.emitirTurnoCancelado(turno);
-    return turno;
-  }
+  this.gateway.emitirTurnoCancelado(turno);
+  return turno;
+}
 
   async turnoActual() {
     return this.prisma.turno.findFirst({

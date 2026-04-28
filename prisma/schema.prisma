@@ -10,14 +10,15 @@ datasource db {
 }
 
 model Usuario {
-  id       Int      @id @default(autoincrement())
+  id       Int     @id @default(autoincrement())
   nombre   String
-  email    String   @unique
+  email    String  @unique
   password String
-  rol      Rol      @default(EMPLEADO)
+  rol      Rol     @default(EMPLEADO)
+  activo   Boolean @default(true)
 
   cajaId Int?
-  caja   Caja?  @relation(fields: [cajaId], references: [id])
+  caja   Caja? @relation(fields: [cajaId], references: [id])
 
   turnosAsignados Turno[] @relation("EmpleadoToTurno")
 
@@ -25,9 +26,9 @@ model Usuario {
 }
 
 model Caja {
-  id      Int     @id @default(autoincrement())
-  nombre  String
-  activo  Boolean @default(true)
+  id     Int     @id @default(autoincrement())
+  nombre String
+  activo Boolean @default(true)
 
   usuarios Usuario[]
   turnos   Turno[]
@@ -36,10 +37,10 @@ model Caja {
 }
 
 model TipoTurno {
-  id          Int    @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   nombre      String
-  prefijo     String @default("T")
-  duracionMin Int    @default(10)
+  prefijo     String  @default("T")
+  duracionMin Int     @default(10)
   activo      Boolean @default(true)
 
   turnos     Turno[]         @relation("TipoTurnoToTurno")
@@ -55,17 +56,18 @@ model Turno {
   tipoTurnoId Int
   tipoTurno   TipoTurno @relation("TipoTurnoToTurno", fields: [tipoTurnoId], references: [id])
 
-  duracionEstimada    Int
-  horaCreacion        DateTime  @default(now())
-  horaLlamado         DateTime?
-  horaInicioAtencion  DateTime?
-  horaFinAtencion     DateTime?
+  duracionEstimada   Int
+  horaCreacion       DateTime  @default(now())
+  horaLlamado        DateTime?
+  horaInicioAtencion DateTime?
+  horaFinAtencion    DateTime?
+  motivoCancelacion  String?
 
   empleadoId Int?
   empleado   Usuario? @relation("EmpleadoToTurno", fields: [empleadoId], references: [id])
 
   cajaId Int?
-  caja   Caja?  @relation(fields: [cajaId], references: [id])
+  caja   Caja? @relation(fields: [cajaId], references: [id])
 
   idempotencyKeys IdempotencyKey[] @relation("TurnoToIdempotencyKey")
 
@@ -88,11 +90,11 @@ model ContadorTurno {
 }
 
 model IdempotencyKey {
-  id     Int     @id @default(autoincrement())
-  key    String
+  id  Int    @id @default(autoincrement())
+  key String
 
   turnoId Int?
-  turno   Turno?  @relation("TurnoToIdempotencyKey", fields: [turnoId], references: [id])
+  turno   Turno? @relation("TurnoToIdempotencyKey", fields: [turnoId], references: [id])
 
   createdAt DateTime @default(now())
 

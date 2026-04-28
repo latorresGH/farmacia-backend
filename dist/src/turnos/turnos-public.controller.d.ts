@@ -14,6 +14,7 @@ export declare class TurnosPublicController {
         horaLlamado: Date | null;
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
+        motivoCancelacion: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     } | null>;

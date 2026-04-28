@@ -109,12 +109,14 @@ export class TurnosController {
     return this.turnosService.finalizarTurno(id);
   }
 
-  @Roles('ADMIN')
+  @Roles('EMPLEADO', 'ADMIN') // cambiás de solo ADMIN a ambos
   @Patch(':id/cancelar')
-  async cancelarTurno(@Param('id', ParseIntPipe) id: number) {
-    return this.turnosService.cancelarTurno(id);
+  async cancelarTurno(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: { motivo?: string },
+  ) {
+    return this.turnosService.cancelarTurno(id, body?.motivo);
   }
-
   @Get('actual')
   async turnoActual() {
     return this.turnosService.turnoActual();

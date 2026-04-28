@@ -16,6 +16,7 @@ export declare class TurnosService {
         horaLlamado: Date | null;
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
+        motivoCancelacion: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     } | null>;
@@ -46,6 +47,7 @@ export declare class TurnosService {
         horaLlamado: Date | null;
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
+        motivoCancelacion: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     })[]>;
@@ -76,6 +78,7 @@ export declare class TurnosService {
         horaLlamado: Date | null;
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
+        motivoCancelacion: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     })[]>;
@@ -106,6 +109,7 @@ export declare class TurnosService {
         horaLlamado: Date | null;
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
+        motivoCancelacion: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     }>;
@@ -136,6 +140,7 @@ export declare class TurnosService {
         horaLlamado: Date | null;
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
+        motivoCancelacion: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     }>;
@@ -166,6 +171,7 @@ export declare class TurnosService {
         horaLlamado: Date | null;
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
+        motivoCancelacion: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     }>;
@@ -196,10 +202,11 @@ export declare class TurnosService {
         horaLlamado: Date | null;
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
+        motivoCancelacion: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     }>;
-    cancelarTurno(turnoId: number): Promise<{
+    cancelarTurno(turnoId: number, motivo?: string): Promise<{
         caja: {
             id: number;
             nombre: string;
@@ -226,6 +233,7 @@ export declare class TurnosService {
         horaLlamado: Date | null;
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
+        motivoCancelacion: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     }>;
@@ -256,6 +264,7 @@ export declare class TurnosService {
         horaLlamado: Date | null;
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
+        motivoCancelacion: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     }) | null>;
@@ -286,6 +295,7 @@ export declare class TurnosService {
         horaLlamado: Date | null;
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
+        motivoCancelacion: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     }) | null>;
@@ -300,6 +310,7 @@ export declare class TurnosService {
         horaLlamado: Date | null;
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
+        motivoCancelacion: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     } | null>;
@@ -331,6 +342,7 @@ export declare class TurnosService {
         horaLlamado: Date | null;
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
+        motivoCancelacion: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     }>;
