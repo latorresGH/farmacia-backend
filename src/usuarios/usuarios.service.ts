@@ -12,12 +12,13 @@ export class UsuariosService {
 
   async listarEmpleados() {
     return this.prisma.usuario.findMany({
+      where: { rol: 'EMPLEADO' }, // ✅ solo empleados
       select: {
         id: true,
         nombre: true,
         email: true,
         rol: true,
-        activo: true, // ✅ agregás esto
+        activo: true,
         cajaId: true,
         caja: { select: { id: true, nombre: true, activo: true } },
         createdAt: true,
@@ -89,16 +90,14 @@ export class UsuariosService {
     });
   }
 
-  async turnosHoyPorEmpleado(fecha?: Date, userId?: number, rol?: string) {
+  async turnosHoyPorEmpleado(fecha?: Date) {
     const dia = fecha ? new Date(fecha) : new Date();
     dia.setHours(0, 0, 0, 0);
     const finDia = new Date(dia);
     finDia.setHours(23, 59, 59, 999);
 
     return this.prisma.usuario.findMany({
-      where: {
-        ...(rol === 'EMPLEADO' && userId ? { id: userId } : {}),
-      },
+      where: { rol: 'EMPLEADO' }, // ✅ admin no aparece como columna
       select: {
         id: true,
         nombre: true,
@@ -149,7 +148,7 @@ export class UsuariosService {
     });
   }
 
-  async turnosSemanaPorEmpleado(fecha?: Date, userId?: number, rol?: string) {
+  async turnosSemanaPorEmpleado(fecha?: Date) {
     const inicio = fecha ? new Date(fecha) : new Date();
     inicio.setHours(0, 0, 0, 0);
     const dia = inicio.getDay();
@@ -161,9 +160,7 @@ export class UsuariosService {
     fin.setHours(23, 59, 59, 999);
 
     return this.prisma.usuario.findMany({
-      where: {
-        ...(rol === 'EMPLEADO' && userId ? { id: userId } : {}),
-      },
+      where: { rol: 'EMPLEADO' }, // ✅ admin no aparece como columna
       select: {
         id: true,
         nombre: true,

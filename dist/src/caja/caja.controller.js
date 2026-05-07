@@ -44,6 +44,9 @@ let CajaController = class CajaController {
     desasignarUsuario(usuarioId) {
         return this.cajaService.desasignarUsuario(usuarioId);
     }
+    asignarTiposTurno(id, body) {
+        return this.cajaService.asignarTiposTurno(id, body.tipoTurnoIds);
+    }
 };
 exports.CajaController = CajaController;
 __decorate([
@@ -101,6 +104,15 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], CajaController.prototype, "desasignarUsuario", null);
+__decorate([
+    (0, roles_decorator_1.Roles)('ADMIN'),
+    (0, common_1.Patch)(':id/tipos-turno'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", void 0)
+], CajaController.prototype, "asignarTiposTurno", null);
 exports.CajaController = CajaController = __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, common_1.Controller)('cajas'),

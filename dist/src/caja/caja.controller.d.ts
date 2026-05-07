@@ -17,6 +17,13 @@ export declare class CajaController {
             email: string;
             rol: import("@prisma/client").$Enums.Rol;
         }[];
+        tiposTurno: {
+            id: number;
+            nombre: string;
+            prefijo: string;
+            duracionMin: number;
+            activo: boolean;
+        }[];
     } & {
         id: number;
         nombre: string;
@@ -63,5 +70,25 @@ export declare class CajaController {
         cajaId: number | null;
         email: string;
         rol: import("@prisma/client").$Enums.Rol;
+    }>;
+    asignarTiposTurno(id: number, body: {
+        tipoTurnoIds: number[];
+    }): Promise<{
+        usuarios: {
+            id: number;
+            nombre: string;
+        }[];
+        tiposTurno: {
+            id: number;
+            nombre: string;
+            prefijo: string;
+            duracionMin: number;
+            activo: boolean;
+        }[];
+    } & {
+        id: number;
+        nombre: string;
+        activo: boolean;
+        createdAt: Date;
     }>;
 }

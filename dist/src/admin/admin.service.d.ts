@@ -29,11 +29,11 @@ export declare class AdminService {
             cantidad: number;
         }[];
         detalle: {
+            horaCreacion: Date;
+            motivoCancelacion: string | null;
             tipoTurno: {
                 nombre: string;
             };
-            horaCreacion: Date;
-            motivoCancelacion: string | null;
             empleado: {
                 id: number;
                 nombre: string;
@@ -59,4 +59,18 @@ export declare class AdminService {
         totalCajas: number;
         tiempoPromedioAtencionHoy: number;
     }>;
+    getTiempoEsperaPorTipo(desde?: string, hasta?: string): Promise<{
+        id: number;
+        nombre: string;
+        prefijo: string;
+        totalAtendidos: number;
+        tiempoEsperaPromedio: number;
+        tiempoAtencionPromedio: number;
+    }[]>;
+    getEvolucionDiaria(desde?: string, hasta?: string): Promise<{
+        total: number;
+        atendidos: number;
+        cancelados: number;
+        fecha: string;
+    }[]>;
 }

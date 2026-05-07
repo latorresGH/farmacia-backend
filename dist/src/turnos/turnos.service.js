@@ -272,10 +272,22 @@ let TurnosService = class TurnosService {
             if (empleadoId && cajaId) {
                 await this.validarEmpleadoEnCaja(tx, empleadoId, cajaId);
             }
+            let tiposPermitidos = [];
+            if (empleadoId) {
+                const usuario = await tx.usuario.findUnique({
+                    where: { id: empleadoId },
+                    include: { caja: { include: { tiposTurno: true } } },
+                });
+                tiposPermitidos = usuario?.caja?.tiposTurno?.map((t) => t.id) ?? [];
+            }
             const turno = await tx.turno.findFirst({
                 where: {
                     estado: client_1.EstadoTurno.PENDIENTE,
-                    ...(tipoTurnoId && { tipoTurnoId }),
+                    ...(tipoTurnoId
+                        ? { tipoTurnoId }
+                        : tiposPermitidos.length > 0
+                            ? { tipoTurnoId: { in: tiposPermitidos } }
+                            : {}),
                 },
                 orderBy: { numero: 'asc' },
             });
@@ -323,6 +335,22 @@ let TurnosService = class TurnosService {
             throw new common_1.BadRequestException('Tipo de turno inválido');
         }
         return this.crearTurno(tipoTurnoId, idempotencyKey);
+    }
+    async actualizarNotas(turnoId, notas) {
+        const existe = await this.prisma.turno.findUnique({
+            where: { id: turnoId },
+        });
+        if (!existe)
+            throw new common_1.NotFoundException('Turno no encontrado');
+        return this.prisma.turno.update({
+            where: { id: turnoId },
+            data: { notas },
+            include: {
+                tipoTurno: true,
+                empleado: { select: { id: true, nombre: true } },
+                caja: { select: { id: true, nombre: true } },
+            },
+        });
     }
     async obtenerEstadisticasTurno(turnoId) {
         const turno = await this.prisma.turno.findUnique({

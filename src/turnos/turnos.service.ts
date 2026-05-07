@@ -284,27 +284,27 @@ export class TurnosService {
   }
 
   async cancelarTurno(turnoId: number, motivo?: string) {
-  const turno = await this.prisma.$transaction(async (tx) => {
-    const existing = await tx.turno.findUnique({ where: { id: turnoId } });
-    if (!existing) throw new NotFoundException('Turno no encontrado');
+    const turno = await this.prisma.$transaction(async (tx) => {
+      const existing = await tx.turno.findUnique({ where: { id: turnoId } });
+      if (!existing) throw new NotFoundException('Turno no encontrado');
 
-    return tx.turno.update({
-      where: { id: turnoId },
-      data: {
-        estado: EstadoTurno.CANCELADO,
-        ...(motivo ? { motivoCancelacion: motivo } : {}),
-      },
-      include: {
-        tipoTurno: true,
-        empleado: { select: { id: true, nombre: true } },
-        caja: { select: { id: true, nombre: true } },
-      },
+      return tx.turno.update({
+        where: { id: turnoId },
+        data: {
+          estado: EstadoTurno.CANCELADO,
+          ...(motivo ? { motivoCancelacion: motivo } : {}),
+        },
+        include: {
+          tipoTurno: true,
+          empleado: { select: { id: true, nombre: true } },
+          caja: { select: { id: true, nombre: true } },
+        },
+      });
     });
-  });
 
-  this.gateway.emitirTurnoCancelado(turno);
-  return turno;
-}
+    this.gateway.emitirTurnoCancelado(turno);
+    return turno;
+  }
 
   async turnoActual() {
     return this.prisma.turno.findFirst({
@@ -328,10 +328,24 @@ export class TurnosService {
         await this.validarEmpleadoEnCaja(tx, empleadoId, cajaId);
       }
 
+      // ✅ Opción A: filtrá por tipos de turno de la caja del empleado
+      let tiposPermitidos: number[] = [];
+      if (empleadoId) {
+        const usuario = await tx.usuario.findUnique({
+          where: { id: empleadoId },
+          include: { caja: { include: { tiposTurno: true } } },
+        });
+        tiposPermitidos = usuario?.caja?.tiposTurno?.map((t) => t.id) ?? [];
+      }
+
       const turno = await tx.turno.findFirst({
         where: {
           estado: EstadoTurno.PENDIENTE,
-          ...(tipoTurnoId && { tipoTurnoId }),
+          ...(tipoTurnoId
+            ? { tipoTurnoId }
+            : tiposPermitidos.length > 0
+              ? { tipoTurnoId: { in: tiposPermitidos } }
+              : {}), // sin tipos = atiende todo
         },
         orderBy: { numero: 'asc' },
       });
@@ -388,6 +402,23 @@ export class TurnosService {
     }
 
     return this.crearTurno(tipoTurnoId, idempotencyKey);
+  }
+
+  async actualizarNotas(turnoId: number, notas: string) {
+    const existe = await this.prisma.turno.findUnique({
+      where: { id: turnoId },
+    });
+    if (!existe) throw new NotFoundException('Turno no encontrado');
+
+    return this.prisma.turno.update({
+      where: { id: turnoId },
+      data: { notas },
+      include: {
+        tipoTurno: true,
+        empleado: { select: { id: true, nombre: true } },
+        caja: { select: { id: true, nombre: true } },
+      },
+    });
   }
 
   async obtenerEstadisticasTurno(turnoId: number) {

@@ -24,6 +24,23 @@ let CajaService = class CajaService {
             },
         });
     }
+    async asignarTiposTurno(cajaId, tipoTurnoIds) {
+        const caja = await this.prisma.caja.findUnique({ where: { id: cajaId } });
+        if (!caja)
+            throw new common_1.NotFoundException('Caja no encontrada');
+        return this.prisma.caja.update({
+            where: { id: cajaId },
+            data: {
+                tiposTurno: {
+                    set: tipoTurnoIds.map((id) => ({ id })),
+                },
+            },
+            include: {
+                tiposTurno: true,
+                usuarios: { select: { id: true, nombre: true } },
+            },
+        });
+    }
     async obtenerCajas() {
         return this.prisma.caja.findMany({
             where: { activo: true },
@@ -31,6 +48,7 @@ let CajaService = class CajaService {
                 usuarios: {
                     select: { id: true, nombre: true, email: true, rol: true },
                 },
+                tiposTurno: true,
             },
             orderBy: { id: 'asc' },
         });

@@ -40,4 +40,20 @@ export class AdminController {
   getComparativa() {
     return this.adminService.getComparativaSemanal();
   }
+
+  @Get('tiempo-espera-por-tipo')
+getTiempoEsperaPorTipo(
+  @Query('desde') desde?: string,
+  @Query('hasta') hasta?: string,
+) {
+  return this.adminService.getTiempoEsperaPorTipo(desde, hasta);
+}
+
+@Get('evolucion-diaria')
+getEvolucionDiaria(
+  @Query('desde') desde?: string,
+  @Query('hasta') hasta?: string,
+) {
+  return this.adminService.getEvolucionDiaria(desde, hasta);
+}
 }

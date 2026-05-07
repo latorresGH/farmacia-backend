@@ -64,4 +64,13 @@ export class CajaController {
   desasignarUsuario(@Param('usuarioId', ParseIntPipe) usuarioId: number) {
     return this.cajaService.desasignarUsuario(usuarioId);
   }
+
+  @Roles('ADMIN')
+@Patch(':id/tipos-turno')
+asignarTiposTurno(
+  @Param('id', ParseIntPipe) id: number,
+  @Body() body: { tipoTurnoIds: number[] },
+) {
+  return this.cajaService.asignarTiposTurno(id, body.tipoTurnoIds);
+}
 }

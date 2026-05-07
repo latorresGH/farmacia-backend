@@ -38,6 +38,12 @@ let AdminController = class AdminController {
     getComparativa() {
         return this.adminService.getComparativaSemanal();
     }
+    getTiempoEsperaPorTipo(desde, hasta) {
+        return this.adminService.getTiempoEsperaPorTipo(desde, hasta);
+    }
+    getEvolucionDiaria(desde, hasta) {
+        return this.adminService.getEvolucionDiaria(desde, hasta);
+    }
 };
 exports.AdminController = AdminController;
 __decorate([
@@ -75,6 +81,22 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], AdminController.prototype, "getComparativa", null);
+__decorate([
+    (0, common_1.Get)('tiempo-espera-por-tipo'),
+    __param(0, (0, common_1.Query)('desde')),
+    __param(1, (0, common_1.Query)('hasta')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], AdminController.prototype, "getTiempoEsperaPorTipo", null);
+__decorate([
+    (0, common_1.Get)('evolucion-diaria'),
+    __param(0, (0, common_1.Query)('desde')),
+    __param(1, (0, common_1.Query)('hasta')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], AdminController.prototype, "getEvolucionDiaria", null);
 exports.AdminController = AdminController = __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)('ADMIN'),

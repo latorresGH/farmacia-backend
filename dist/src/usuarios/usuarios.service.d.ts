@@ -58,7 +58,7 @@ export declare class UsuariosService {
         email: string;
         rol: import("@prisma/client").$Enums.Rol;
     }>;
-    turnosHoyPorEmpleado(fecha?: Date, userId?: number, rol?: string): Promise<{
+    turnosHoyPorEmpleado(fecha?: Date): Promise<{
         caja: {
             id: number;
             nombre: string;
@@ -91,6 +91,7 @@ export declare class UsuariosService {
             horaInicioAtencion: Date | null;
             horaFinAtencion: Date | null;
             motivoCancelacion: string | null;
+            notas: string | null;
             empleadoId: number | null;
             cajaId: number | null;
         })[];
@@ -115,7 +116,7 @@ export declare class UsuariosService {
         email: string;
         rol: import("@prisma/client").$Enums.Rol;
     }>;
-    turnosSemanaPorEmpleado(fecha?: Date, userId?: number, rol?: string): Promise<{
+    turnosSemanaPorEmpleado(fecha?: Date): Promise<{
         caja: {
             id: number;
             nombre: string;
@@ -148,6 +149,7 @@ export declare class UsuariosService {
             horaInicioAtencion: Date | null;
             horaFinAtencion: Date | null;
             motivoCancelacion: string | null;
+            notas: string | null;
             empleadoId: number | null;
             cajaId: number | null;
         })[];

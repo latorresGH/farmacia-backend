@@ -53,6 +53,7 @@ let UsuariosService = class UsuariosService {
     }
     async listarEmpleados() {
         return this.prisma.usuario.findMany({
+            where: { rol: 'EMPLEADO' },
             select: {
                 id: true,
                 nombre: true,
@@ -124,15 +125,13 @@ let UsuariosService = class UsuariosService {
             },
         });
     }
-    async turnosHoyPorEmpleado(fecha, userId, rol) {
+    async turnosHoyPorEmpleado(fecha) {
         const dia = fecha ? new Date(fecha) : new Date();
         dia.setHours(0, 0, 0, 0);
         const finDia = new Date(dia);
         finDia.setHours(23, 59, 59, 999);
         return this.prisma.usuario.findMany({
-            where: {
-                ...(rol === 'EMPLEADO' && userId ? { id: userId } : {}),
-            },
+            where: { rol: 'EMPLEADO' },
             select: {
                 id: true,
                 nombre: true,
@@ -182,7 +181,7 @@ let UsuariosService = class UsuariosService {
             select: { id: true, nombre: true, email: true, rol: true },
         });
     }
-    async turnosSemanaPorEmpleado(fecha, userId, rol) {
+    async turnosSemanaPorEmpleado(fecha) {
         const inicio = fecha ? new Date(fecha) : new Date();
         inicio.setHours(0, 0, 0, 0);
         const dia = inicio.getDay();
@@ -192,9 +191,7 @@ let UsuariosService = class UsuariosService {
         fin.setDate(inicio.getDate() + 6);
         fin.setHours(23, 59, 59, 999);
         return this.prisma.usuario.findMany({
-            where: {
-                ...(rol === 'EMPLEADO' && userId ? { id: userId } : {}),
-            },
+            where: { rol: 'EMPLEADO' },
             select: {
                 id: true,
                 nombre: true,

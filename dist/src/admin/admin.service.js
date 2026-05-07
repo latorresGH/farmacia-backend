@@ -45,6 +45,7 @@ let AdminService = class AdminService {
         const fechaHasta = hasta ? new Date(hasta) : new Date();
         fechaHasta.setHours(23, 59, 59, 999);
         const empleados = await this.prisma.usuario.findMany({
+            where: { rol: 'EMPLEADO' },
             select: {
                 id: true,
                 nombre: true,
@@ -191,7 +192,7 @@ let AdminService = class AdminService {
             this.prisma.turno.count({
                 where: { horaCreacion: { gte: hoy, lte: finHoy } },
             }),
-            this.prisma.usuario.count(),
+            this.prisma.usuario.count({ where: { rol: 'EMPLEADO' } }),
             this.prisma.caja.count({ where: { activo: true } }),
             this.prisma.turno.findMany({
                 where: {
@@ -215,6 +216,80 @@ let AdminService = class AdminService {
             totalCajas,
             tiempoPromedioAtencionHoy: Math.round(tiempoPromedioHoy * 10) / 10,
         };
+    }
+    async getTiempoEsperaPorTipo(desde, hasta) {
+        const fechaDesde = desde ? new Date(desde) : new Date(new Date().setDate(new Date().getDate() - 30));
+        fechaDesde.setHours(0, 0, 0, 0);
+        const fechaHasta = hasta ? new Date(hasta) : new Date();
+        fechaHasta.setHours(23, 59, 59, 999);
+        const tipos = await this.prisma.tipoTurno.findMany({
+            where: { activo: true },
+            include: {
+                turnos: {
+                    where: {
+                        estado: 'ATENDIDO',
+                        horaCreacion: { gte: fechaDesde, lte: fechaHasta },
+                        horaLlamado: { not: null },
+                    },
+                    select: {
+                        horaCreacion: true,
+                        horaLlamado: true,
+                        horaInicioAtencion: true,
+                        horaFinAtencion: true,
+                    },
+                },
+            },
+        });
+        return tipos.map((tipo) => {
+            const turnos = tipo.turnos;
+            const tiempoEspera = turnos.length > 0
+                ? turnos.reduce((acc, t) => acc + (new Date(t.horaLlamado).getTime() - new Date(t.horaCreacion).getTime()) / 60000, 0) / turnos.length
+                : 0;
+            const tiempoAtencion = turnos.filter(t => t.horaInicioAtencion && t.horaFinAtencion).length > 0
+                ? turnos
+                    .filter(t => t.horaInicioAtencion && t.horaFinAtencion)
+                    .reduce((acc, t) => acc + (new Date(t.horaFinAtencion).getTime() - new Date(t.horaInicioAtencion).getTime()) / 60000, 0) / turnos.filter(t => t.horaFinAtencion).length
+                : 0;
+            return {
+                id: tipo.id,
+                nombre: tipo.nombre,
+                prefijo: tipo.prefijo,
+                totalAtendidos: turnos.length,
+                tiempoEsperaPromedio: Math.round(tiempoEspera * 10) / 10,
+                tiempoAtencionPromedio: Math.round(tiempoAtencion * 10) / 10,
+            };
+        });
+    }
+    async getEvolucionDiaria(desde, hasta) {
+        const fechaDesde = desde ? new Date(desde) : new Date(new Date().setDate(new Date().getDate() - 14));
+        fechaDesde.setHours(0, 0, 0, 0);
+        const fechaHasta = hasta ? new Date(hasta) : new Date();
+        fechaHasta.setHours(23, 59, 59, 999);
+        const turnos = await this.prisma.turno.findMany({
+            where: { horaCreacion: { gte: fechaDesde, lte: fechaHasta } },
+            select: { horaCreacion: true, estado: true },
+        });
+        const dias = {};
+        const cursor = new Date(fechaDesde);
+        while (cursor <= fechaHasta) {
+            const key = cursor.toISOString().split('T')[0];
+            dias[key] = { total: 0, atendidos: 0, cancelados: 0 };
+            cursor.setDate(cursor.getDate() + 1);
+        }
+        turnos.forEach((t) => {
+            const key = new Date(t.horaCreacion).toISOString().split('T')[0];
+            if (dias[key]) {
+                dias[key].total++;
+                if (t.estado === 'ATENDIDO')
+                    dias[key].atendidos++;
+                if (t.estado === 'CANCELADO')
+                    dias[key].cancelados++;
+            }
+        });
+        return Object.entries(dias).map(([fecha, datos]) => ({
+            fecha,
+            ...datos,
+        }));
     }
 };
 exports.AdminService = AdminService;

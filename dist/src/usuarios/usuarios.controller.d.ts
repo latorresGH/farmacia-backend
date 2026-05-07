@@ -4,28 +4,28 @@ export declare class UsuariosController {
     private readonly usuariosService;
     constructor(usuariosService: UsuariosService);
     listarEmpleados(): Promise<{
-        id: number;
-        nombre: string;
-        email: string;
-        rol: import("@prisma/client").$Enums.Rol;
-        activo: boolean;
-        cajaId: number | null;
-        createdAt: Date;
         caja: {
             id: number;
             nombre: string;
             activo: boolean;
         } | null;
-    }[]>;
-    turnosHoy(fecha?: string, req?: any): Promise<{
         id: number;
         nombre: string;
-        rol: import("@prisma/client").$Enums.Rol;
+        activo: boolean;
+        createdAt: Date;
         cajaId: number | null;
+        email: string;
+        rol: import("@prisma/client").$Enums.Rol;
+    }[]>;
+    turnosHoy(fecha?: string): Promise<{
         caja: {
             id: number;
             nombre: string;
         } | null;
+        id: number;
+        nombre: string;
+        cajaId: number | null;
+        rol: import("@prisma/client").$Enums.Rol;
         turnosAsignados: ({
             caja: {
                 id: number;
@@ -34,35 +34,36 @@ export declare class UsuariosController {
             tipoTurno: {
                 id: number;
                 nombre: string;
-                activo: boolean;
                 prefijo: string;
                 duracionMin: number;
+                activo: boolean;
             };
         } & {
             id: number;
-            cajaId: number | null;
-            horaCreacion: Date;
             numero: number;
             codigo: string;
             estado: import("@prisma/client").$Enums.EstadoTurno;
             tipoTurnoId: number;
             duracionEstimada: number;
+            horaCreacion: Date;
             horaLlamado: Date | null;
             horaInicioAtencion: Date | null;
             horaFinAtencion: Date | null;
             motivoCancelacion: string | null;
+            notas: string | null;
             empleadoId: number | null;
+            cajaId: number | null;
         })[];
     }[]>;
-    turnosSemana(fecha?: string, req?: any): Promise<{
-        id: number;
-        nombre: string;
-        rol: import("@prisma/client").$Enums.Rol;
-        cajaId: number | null;
+    turnosSemana(fecha?: string): Promise<{
         caja: {
             id: number;
             nombre: string;
         } | null;
+        id: number;
+        nombre: string;
+        cajaId: number | null;
+        rol: import("@prisma/client").$Enums.Rol;
         turnosAsignados: ({
             caja: {
                 id: number;
@@ -71,68 +72,69 @@ export declare class UsuariosController {
             tipoTurno: {
                 id: number;
                 nombre: string;
-                activo: boolean;
                 prefijo: string;
                 duracionMin: number;
+                activo: boolean;
             };
         } & {
             id: number;
-            cajaId: number | null;
-            horaCreacion: Date;
             numero: number;
             codigo: string;
             estado: import("@prisma/client").$Enums.EstadoTurno;
             tipoTurnoId: number;
             duracionEstimada: number;
+            horaCreacion: Date;
             horaLlamado: Date | null;
             horaInicioAtencion: Date | null;
             horaFinAtencion: Date | null;
             motivoCancelacion: string | null;
+            notas: string | null;
             empleadoId: number | null;
+            cajaId: number | null;
         })[];
     }[]>;
     obtenerEmpleado(id: number): Promise<{
-        id: number;
-        nombre: string;
-        email: string;
-        rol: import("@prisma/client").$Enums.Rol;
-        cajaId: number | null;
-        createdAt: Date;
         caja: {
             id: number;
             nombre: string;
             activo: boolean;
         } | null;
+        id: number;
+        nombre: string;
+        createdAt: Date;
+        cajaId: number | null;
+        email: string;
+        rol: import("@prisma/client").$Enums.Rol;
     }>;
     actualizarEmpleado(id: number, body: {
         nombre?: string;
         email?: string;
         rol?: Rol;
     }): Promise<{
-        id: number;
-        nombre: string;
-        email: string;
-        rol: import("@prisma/client").$Enums.Rol;
-        cajaId: number | null;
         caja: {
             id: number;
             nombre: string;
             activo: boolean;
         } | null;
+        id: number;
+        nombre: string;
+        cajaId: number | null;
+        email: string;
+        rol: import("@prisma/client").$Enums.Rol;
     }>;
     asignarCaja(id: number, body: {
         cajaId: number | null;
     }): Promise<{
-        id: number;
-        nombre: string;
-        email: string;
-        rol: import("@prisma/client").$Enums.Rol;
-        cajaId: number | null;
         caja: {
             id: number;
             nombre: string;
             activo: boolean;
         } | null;
+        id: number;
+        nombre: string;
+        cajaId: number | null;
+        email: string;
+        rol: import("@prisma/client").$Enums.Rol;
     }>;
     crearEmpleado(body: {
         nombre: string;
@@ -140,31 +142,31 @@ export declare class UsuariosController {
         password: string;
         rol?: Rol;
     }): Promise<{
-        id: number;
-        nombre: string;
-        email: string;
-        rol: import("@prisma/client").$Enums.Rol;
-        cajaId: number | null;
-        createdAt: Date;
         caja: {
             id: number;
             nombre: string;
             activo: boolean;
         } | null;
+        id: number;
+        nombre: string;
+        createdAt: Date;
+        cajaId: number | null;
+        email: string;
+        rol: import("@prisma/client").$Enums.Rol;
     }>;
     desactivarEmpleado(id: number): Promise<{
         id: number;
         nombre: string;
+        activo: boolean;
         email: string;
         rol: import("@prisma/client").$Enums.Rol;
-        activo: boolean;
     }>;
     activarEmpleado(id: number): Promise<{
         id: number;
         nombre: string;
+        activo: boolean;
         email: string;
         rol: import("@prisma/client").$Enums.Rol;
-        activo: boolean;
     }>;
     resetearPassword(id: number, body: {
         password: string;

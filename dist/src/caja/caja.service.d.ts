@@ -10,12 +10,37 @@ export declare class CajaService {
         activo: boolean;
         createdAt: Date;
     }>;
+    asignarTiposTurno(cajaId: number, tipoTurnoIds: number[]): Promise<{
+        usuarios: {
+            id: number;
+            nombre: string;
+        }[];
+        tiposTurno: {
+            id: number;
+            nombre: string;
+            prefijo: string;
+            duracionMin: number;
+            activo: boolean;
+        }[];
+    } & {
+        id: number;
+        nombre: string;
+        activo: boolean;
+        createdAt: Date;
+    }>;
     obtenerCajas(): Promise<({
         usuarios: {
             id: number;
             nombre: string;
             email: string;
             rol: import("@prisma/client").$Enums.Rol;
+        }[];
+        tiposTurno: {
+            id: number;
+            nombre: string;
+            prefijo: string;
+            duracionMin: number;
+            activo: boolean;
         }[];
     } & {
         id: number;

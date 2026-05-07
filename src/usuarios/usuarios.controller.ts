@@ -29,21 +29,17 @@ export class UsuariosController {
 
   @Roles('ADMIN', 'EMPLEADO')
   @Get('turnos/hoy')
-  turnosHoy(@Query('fecha') fecha?: string, @Req() req?: any) {
+  turnosHoy(@Query('fecha') fecha?: string) {
     return this.usuariosService.turnosHoyPorEmpleado(
       fecha ? new Date(fecha) : undefined,
-      req.user?.userId,
-      req.user?.rol,
     );
   }
 
   @Roles('ADMIN', 'EMPLEADO')
   @Get('turnos/semana')
-  turnosSemana(@Query('fecha') fecha?: string, @Req() req?: any) {
+  turnosSemana(@Query('fecha') fecha?: string) {
     return this.usuariosService.turnosSemanaPorEmpleado(
       fecha ? new Date(fecha) : undefined,
-      req.user?.userId,
-      req.user?.rol,
     );
   }
 
@@ -86,23 +82,23 @@ export class UsuariosController {
   }
 
   @Roles('ADMIN')
-@Patch(':id/desactivar')
-desactivarEmpleado(@Param('id', ParseIntPipe) id: number) {
-  return this.usuariosService.desactivarEmpleado(id);
-}
+  @Patch(':id/desactivar')
+  desactivarEmpleado(@Param('id', ParseIntPipe) id: number) {
+    return this.usuariosService.desactivarEmpleado(id);
+  }
 
-@Roles('ADMIN')
-@Patch(':id/activar')
-activarEmpleado(@Param('id', ParseIntPipe) id: number) {
-  return this.usuariosService.activarEmpleado(id);
-}
+  @Roles('ADMIN')
+  @Patch(':id/activar')
+  activarEmpleado(@Param('id', ParseIntPipe) id: number) {
+    return this.usuariosService.activarEmpleado(id);
+  }
 
-@Roles('ADMIN')
-@Patch(':id/reset-password')
-resetearPassword(
-  @Param('id', ParseIntPipe) id: number,
-  @Body() body: { password: string },
-) {
-  return this.usuariosService.resetearPassword(id, body.password);
-}
+  @Roles('ADMIN')
+  @Patch(':id/reset-password')
+  resetearPassword(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: { password: string },
+  ) {
+    return this.usuariosService.resetearPassword(id, body.password);
+  }
 }

@@ -32,6 +32,7 @@ model Caja {
 
   usuarios Usuario[]
   turnos   Turno[]
+  tiposTurno TipoTurno[] @relation("CajaToTipoTurno")
 
   createdAt DateTime @default(now())
 }
@@ -45,6 +46,7 @@ model TipoTurno {
 
   turnos     Turno[]         @relation("TipoTurnoToTurno")
   contadores ContadorTurno[] @relation("TipoTurnoToContadorTurno")
+  cajas      Caja[]          @relation("CajaToTipoTurno")
 }
 
 model Turno {
@@ -62,6 +64,7 @@ model Turno {
   horaInicioAtencion DateTime?
   horaFinAtencion    DateTime?
   motivoCancelacion  String?
+  notas              String?
 
   empleadoId Int?
   empleado   Usuario? @relation("EmpleadoToTurno", fields: [empleadoId], references: [id])

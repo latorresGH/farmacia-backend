@@ -26,11 +26,11 @@ let UsuariosController = class UsuariosController {
     listarEmpleados() {
         return this.usuariosService.listarEmpleados();
     }
-    turnosHoy(fecha, req) {
-        return this.usuariosService.turnosHoyPorEmpleado(fecha ? new Date(fecha) : undefined, req.user?.userId, req.user?.rol);
+    turnosHoy(fecha) {
+        return this.usuariosService.turnosHoyPorEmpleado(fecha ? new Date(fecha) : undefined);
     }
-    turnosSemana(fecha, req) {
-        return this.usuariosService.turnosSemanaPorEmpleado(fecha ? new Date(fecha) : undefined, req.user?.userId, req.user?.rol);
+    turnosSemana(fecha) {
+        return this.usuariosService.turnosSemanaPorEmpleado(fecha ? new Date(fecha) : undefined);
     }
     obtenerEmpleado(id) {
         return this.usuariosService.obtenerEmpleado(id);
@@ -66,18 +66,16 @@ __decorate([
     (0, roles_decorator_1.Roles)('ADMIN', 'EMPLEADO'),
     (0, common_1.Get)('turnos/hoy'),
     __param(0, (0, common_1.Query)('fecha')),
-    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], UsuariosController.prototype, "turnosHoy", null);
 __decorate([
     (0, roles_decorator_1.Roles)('ADMIN', 'EMPLEADO'),
     (0, common_1.Get)('turnos/semana'),
     __param(0, (0, common_1.Query)('fecha')),
-    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], UsuariosController.prototype, "turnosSemana", null);
 __decorate([
