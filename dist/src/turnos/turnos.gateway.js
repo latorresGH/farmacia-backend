@@ -23,7 +23,8 @@ let TurnosGateway = class TurnosGateway {
         try {
             const token = client.handshake.auth?.token;
             if (!token) {
-                client.disconnect();
+                client.join('pantalla');
+                console.log('📺 PANTALLA CONNECT:', client.id);
                 return;
             }
             const payload = this.jwtService.verify(token);
@@ -36,22 +37,22 @@ let TurnosGateway = class TurnosGateway {
         }
     }
     emitirTurnoCreado(turno) {
-        this.server.to('turnos').emit('turno_creado', turno);
+        this.server.emit('turno_creado', turno);
     }
     emitirTurnoLlamado(turno) {
-        this.server.to('turnos').emit('turno_llamado', turno);
+        this.server.emit('turno_llamado', turno);
     }
     emitirTurnoDerivado(turno) {
         this.server.to('turnos').emit('turno_derivado', turno);
     }
     emitirTurnoEnAtencion(turno) {
-        this.server.to('turnos').emit('turno_en_atencion', turno);
+        this.server.emit('turno_en_atencion', turno);
     }
     emitirTurnoFinalizado(turno) {
-        this.server.to('turnos').emit('turno_finalizado', turno);
+        this.server.emit('turno_finalizado', turno);
     }
     emitirTurnoCancelado(turno) {
-        this.server.to('turnos').emit('turno_cancelado', turno);
+        this.server.emit('turno_cancelado', turno);
     }
 };
 exports.TurnosGateway = TurnosGateway;

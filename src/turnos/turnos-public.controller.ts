@@ -2,6 +2,7 @@ import {
   Controller,
   Post,
   Body,
+  Get,
   Headers,
   BadRequestException,
 } from '@nestjs/common';
@@ -26,4 +27,9 @@ export class TurnosPublicController {
       idempotencyKey,
     );
   }
+
+  @Get('estado')
+async estadoActual() {
+  return this.turnosService.obtenerEstadoPublico();
+}
 }

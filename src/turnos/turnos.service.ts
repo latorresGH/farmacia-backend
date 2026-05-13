@@ -283,6 +283,50 @@ export class TurnosService {
     return turno;
   }
 
+  async obtenerEstadoPublico() {
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+
+  const [cajas, pendientes] = await Promise.all([
+    this.prisma.caja.findMany({
+      where: { activo: true },
+      include: {
+        turnos: {
+          where: {
+            estado: { in: ['LLAMADO', 'EN_ATENCION'] },
+            horaCreacion: { gte: hoy },
+          },
+          include: {
+            tipoTurno: true,
+          },
+          orderBy: { horaLlamado: 'desc' },
+          take: 1,
+        },
+      },
+      orderBy: { id: 'asc' },
+    }),
+    this.prisma.turno.findMany({
+      where: {
+        estado: 'PENDIENTE',
+        horaCreacion: { gte: hoy },
+      },
+      include: {
+        tipoTurno: true,
+      },
+      orderBy: { numero: 'asc' },
+    }),
+  ]);
+
+  return {
+    cajas: cajas.map((c) => ({
+      id: c.id,
+      nombre: c.nombre,
+      turnoActual: c.turnos[0] ?? null,
+    })),
+    pendientes,
+  };
+}
+
   async cancelarTurno(turnoId: number, motivo?: string) {
     const turno = await this.prisma.$transaction(async (tx) => {
       const existing = await tx.turno.findUnique({ where: { id: turnoId } });

@@ -213,6 +213,60 @@ export declare class TurnosService {
         empleadoId: number | null;
         cajaId: number | null;
     }>;
+    obtenerEstadoPublico(): Promise<{
+        cajas: {
+            id: number;
+            nombre: string;
+            turnoActual: {
+                tipoTurno: {
+                    id: number;
+                    nombre: string;
+                    prefijo: string;
+                    duracionMin: number;
+                    activo: boolean;
+                };
+            } & {
+                id: number;
+                numero: number;
+                codigo: string;
+                estado: import("@prisma/client").$Enums.EstadoTurno;
+                tipoTurnoId: number;
+                duracionEstimada: number;
+                horaCreacion: Date;
+                horaLlamado: Date | null;
+                horaInicioAtencion: Date | null;
+                horaFinAtencion: Date | null;
+                motivoCancelacion: string | null;
+                notas: string | null;
+                empleadoId: number | null;
+                cajaId: number | null;
+            };
+        }[];
+        pendientes: ({
+            tipoTurno: {
+                id: number;
+                nombre: string;
+                prefijo: string;
+                duracionMin: number;
+                activo: boolean;
+            };
+        } & {
+            id: number;
+            numero: number;
+            codigo: string;
+            estado: import("@prisma/client").$Enums.EstadoTurno;
+            tipoTurnoId: number;
+            duracionEstimada: number;
+            horaCreacion: Date;
+            horaLlamado: Date | null;
+            horaInicioAtencion: Date | null;
+            horaFinAtencion: Date | null;
+            motivoCancelacion: string | null;
+            notas: string | null;
+            empleadoId: number | null;
+            cajaId: number | null;
+        })[];
+    }>;
     cancelarTurno(turnoId: number, motivo?: string): Promise<{
         caja: {
             id: number;

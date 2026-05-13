@@ -27,6 +27,9 @@ let TurnosPublicController = class TurnosPublicController {
         }
         return this.turnosService.crearTurnoPublico(dto.tipoTurnoId, idempotencyKey);
     }
+    async estadoActual() {
+        return this.turnosService.obtenerEstadoPublico();
+    }
 };
 exports.TurnosPublicController = TurnosPublicController;
 __decorate([
@@ -37,6 +40,12 @@ __decorate([
     __metadata("design:paramtypes", [String, CrearTurnoDto_1.CrearTurnoDto]),
     __metadata("design:returntype", Promise)
 ], TurnosPublicController.prototype, "crearTurnoPublico", null);
+__decorate([
+    (0, common_1.Get)('estado'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], TurnosPublicController.prototype, "estadoActual", null);
 exports.TurnosPublicController = TurnosPublicController = __decorate([
     (0, common_1.Controller)('turnos/public'),
     __metadata("design:paramtypes", [turnos_service_1.TurnosService])

@@ -11,7 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 })
 export class TurnosGateway implements OnGatewayConnection {
   @WebSocketServer()
-  server: Server;
+  server!: Server;
 
   constructor(private jwtService: JwtService) {}
 
@@ -20,7 +20,8 @@ export class TurnosGateway implements OnGatewayConnection {
       const token = client.handshake.auth?.token;
 
       if (!token) {
-        client.disconnect();
+        client.join('pantalla');
+        console.log('📺 PANTALLA CONNECT:', client.id);
         return;
       }
 
@@ -34,11 +35,11 @@ export class TurnosGateway implements OnGatewayConnection {
   }
 
   emitirTurnoCreado(turno: any) {
-    this.server.to('turnos').emit('turno_creado', turno);
+    this.server.emit('turno_creado', turno);
   }
 
   emitirTurnoLlamado(turno: any) {
-    this.server.to('turnos').emit('turno_llamado', turno);
+    this.server.emit('turno_llamado', turno);
   }
 
   emitirTurnoDerivado(turno: any) {
@@ -46,14 +47,14 @@ export class TurnosGateway implements OnGatewayConnection {
   }
 
   emitirTurnoEnAtencion(turno: any) {
-    this.server.to('turnos').emit('turno_en_atencion', turno);
+    this.server.emit('turno_en_atencion', turno);
   }
 
   emitirTurnoFinalizado(turno: any) {
-    this.server.to('turnos').emit('turno_finalizado', turno);
+    this.server.emit('turno_finalizado', turno);
   }
 
   emitirTurnoCancelado(turno: any) {
-    this.server.to('turnos').emit('turno_cancelado', turno);
+    this.server.emit('turno_cancelado', turno);
   }
 }
