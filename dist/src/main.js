@@ -40,6 +40,10 @@ async function bootstrap() {
     dotenv.config();
     console.log('JWT_SECRET:', process.env.JWT_SECRET);
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    app.use((req, res, next) => {
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
+        next();
+    });
     app.enableCors({
         origin: '*',
     });

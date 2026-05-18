@@ -13,7 +13,7 @@ export declare class TiposTurnoService {
         duracionMin: number;
         activo: boolean;
     }>;
-    obtenerTipos(): Promise<{
+    obtenerTipos(soloActivos?: boolean): Promise<{
         id: number;
         nombre: string;
         prefijo: string;

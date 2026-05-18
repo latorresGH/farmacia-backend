@@ -91,7 +91,6 @@ export declare class UsuariosService {
             horaInicioAtencion: Date | null;
             horaFinAtencion: Date | null;
             motivoCancelacion: string | null;
-            notas: string | null;
             empleadoId: number | null;
             cajaId: number | null;
         })[];
@@ -149,7 +148,6 @@ export declare class UsuariosService {
             horaInicioAtencion: Date | null;
             horaFinAtencion: Date | null;
             motivoCancelacion: string | null;
-            notas: string | null;
             empleadoId: number | null;
             cajaId: number | null;
         })[];

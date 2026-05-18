@@ -16,12 +16,13 @@ const tipos_turno_module_1 = require("./tipos-turno/tipos-turno.module");
 const caja_module_1 = require("./caja/caja.module");
 const usuarios_module_1 = require("./usuarios/usuarios.module");
 const admin_module_1 = require("./admin/admin.module");
+const anotaciones_module_1 = require("./anotaciones/anotaciones.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [turnos_module_1.TurnosModule, tipos_turno_module_1.TiposTurnoModule, auth_module_1.AuthModule, caja_module_1.CajaModule, usuarios_module_1.UsuariosModule, admin_module_1.AdminModule],
+        imports: [turnos_module_1.TurnosModule, tipos_turno_module_1.TiposTurnoModule, auth_module_1.AuthModule, caja_module_1.CajaModule, usuarios_module_1.UsuariosModule, admin_module_1.AdminModule, anotaciones_module_1.AnotacionesModule],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })

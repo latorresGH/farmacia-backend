@@ -62,9 +62,6 @@ let TurnosController = class TurnosController {
         });
         return this.turnosService.iniciarAtencion(id, user?.userId, usuario?.cajaId ?? undefined);
     }
-    async actualizarNotas(id, body) {
-        return this.turnosService.actualizarNotas(id, body.notas);
-    }
     async finalizarTurno(id) {
         return this.turnosService.finalizarTurno(id);
     }
@@ -137,15 +134,6 @@ __decorate([
     __metadata("design:paramtypes", [Object, Number]),
     __metadata("design:returntype", Promise)
 ], TurnosController.prototype, "iniciarAtencion", null);
-__decorate([
-    (0, roles_decorator_1.Roles)('EMPLEADO', 'ADMIN'),
-    (0, common_1.Patch)(':id/notas'),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Object]),
-    __metadata("design:returntype", Promise)
-], TurnosController.prototype, "actualizarNotas", null);
 __decorate([
     (0, roles_decorator_1.Roles)('EMPLEADO', 'ADMIN'),
     (0, common_1.Patch)(':id/finalizar'),

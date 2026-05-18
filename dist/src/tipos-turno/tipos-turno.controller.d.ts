@@ -13,7 +13,7 @@ export declare class TiposTurnoController {
         duracionMin: number;
         activo: boolean;
     }>;
-    listarPublico(): Promise<{
+    listarPublico(soloActivos?: string): Promise<{
         id: number;
         nombre: string;
         prefijo: string;

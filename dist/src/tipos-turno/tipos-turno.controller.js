@@ -23,8 +23,8 @@ let TiposTurnoController = class TiposTurnoController {
     async crearTipo(body) {
         return this.tiposService.crearTipoTurno(body);
     }
-    async listarPublico() {
-        return this.tiposService.obtenerTipos();
+    async listarPublico(soloActivos) {
+        return this.tiposService.obtenerTipos(soloActivos !== 'false');
     }
     async obtenerTipo(id) {
         return this.tiposService.obtenerTipo(id);
@@ -46,8 +46,9 @@ __decorate([
 ], TiposTurnoController.prototype, "crearTipo", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)('soloActivos')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], TiposTurnoController.prototype, "listarPublico", null);
 __decorate([

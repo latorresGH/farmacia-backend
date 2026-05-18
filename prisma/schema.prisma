@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -30,8 +27,8 @@ model Caja {
   nombre String
   activo Boolean @default(true)
 
-  usuarios Usuario[]
-  turnos   Turno[]
+  usuarios   Usuario[]
+  turnos     Turno[]
   tiposTurno TipoTurno[] @relation("CajaToTipoTurno")
 
   createdAt DateTime @default(now())
@@ -64,7 +61,6 @@ model Turno {
   horaInicioAtencion DateTime?
   horaFinAtencion    DateTime?
   motivoCancelacion  String?
-  notas              String?
 
   empleadoId Int?
   empleado   Usuario? @relation("EmpleadoToTurno", fields: [empleadoId], references: [id])
@@ -73,11 +69,26 @@ model Turno {
   caja   Caja? @relation(fields: [cajaId], references: [id])
 
   idempotencyKeys IdempotencyKey[] @relation("TurnoToIdempotencyKey")
+  anotaciones     Anotacion[]      @relation("TurnoToAnotacion")
 
   @@index([estado])
   @@index([tipoTurnoId])
   @@index([empleadoId])
   @@index([horaCreacion])
+}
+
+model Anotacion {
+  id            Int      @id @default(autoincrement())
+  contenido     String
+  usuarioId     Int
+  usuarioNombre String
+  esAdmin       Boolean  @default(false)
+  creadoEn      DateTime @default(now())
+
+  turnoId Int
+  turno   Turno @relation("TurnoToAnotacion", fields: [turnoId], references: [id])
+
+  @@index([turnoId])
 }
 
 model ContadorTurno {
@@ -86,8 +97,7 @@ model ContadorTurno {
   ultimoNumero Int      @default(0)
 
   tipoTurnoId Int
-
-  tipoTurno TipoTurno @relation("TipoTurnoToContadorTurno", fields: [tipoTurnoId], references: [id])
+  tipoTurno   TipoTurno @relation("TipoTurnoToContadorTurno", fields: [tipoTurnoId], references: [id])
 
   @@unique([tipoTurnoId, fecha])
 }

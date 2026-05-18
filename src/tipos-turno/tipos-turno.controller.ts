@@ -7,6 +7,7 @@ import {
   Param,
   Body,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { TiposTurnoService } from './tipos-turno.service';
 
@@ -27,8 +28,8 @@ export class TiposTurnoController {
   }
 
   @Get()
-  async listarPublico() {
-    return this.tiposService.obtenerTipos();
+  async listarPublico(@Query('soloActivos') soloActivos?: string) {
+    return this.tiposService.obtenerTipos(soloActivos !== 'false');
   }
 
   @Get('detalle/:id')

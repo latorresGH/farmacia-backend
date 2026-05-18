@@ -103,15 +103,6 @@ export class TurnosController {
     );
   }
 
-@Roles('EMPLEADO', 'ADMIN')
-@Patch(':id/notas')
-async actualizarNotas(
-  @Param('id', ParseIntPipe) id: number,
-  @Body() body: { notas: string },
-) {
-  return this.turnosService.actualizarNotas(id, body.notas);
-}
-
   @Roles('EMPLEADO', 'ADMIN')
   @Patch(':id/finalizar')
   async finalizarTurno(@Param('id', ParseIntPipe) id: number) {

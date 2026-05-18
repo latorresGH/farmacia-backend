@@ -30,14 +30,12 @@ export class TiposTurnoService {
     });
   }
 
-  async obtenerTipos() {
-    return this.prisma.tipoTurno.findMany({
-      where: {
-        activo: true,
-      },
-      orderBy: { id: 'asc' },
-    });
-  }
+async obtenerTipos(soloActivos = true) {
+  return this.prisma.tipoTurno.findMany({
+    where: soloActivos ? { activo: true } : undefined,
+    orderBy: { id: 'asc' },
+  });
+}
 
   async obtenerTipo(id: number) {
     const tipo = await this.prisma.tipoTurno.findUnique({

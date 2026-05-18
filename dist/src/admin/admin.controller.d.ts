@@ -35,11 +35,11 @@ export declare class AdminController {
             cantidad: number;
         }[];
         detalle: {
-            horaCreacion: Date;
-            motivoCancelacion: string | null;
             tipoTurno: {
                 nombre: string;
             };
+            horaCreacion: Date;
+            motivoCancelacion: string | null;
             empleado: {
                 id: number;
                 nombre: string;

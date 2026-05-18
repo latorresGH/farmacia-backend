@@ -35,11 +35,9 @@ let TiposTurnoService = class TiposTurnoService {
             },
         });
     }
-    async obtenerTipos() {
+    async obtenerTipos(soloActivos = true) {
         return this.prisma.tipoTurno.findMany({
-            where: {
-                activo: true,
-            },
+            where: soloActivos ? { activo: true } : undefined,
             orderBy: { id: 'asc' },
         });
     }

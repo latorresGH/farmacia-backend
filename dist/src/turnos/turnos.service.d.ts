@@ -17,7 +17,6 @@ export declare class TurnosService {
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
         motivoCancelacion: string | null;
-        notas: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     } | null>;
@@ -49,7 +48,6 @@ export declare class TurnosService {
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
         motivoCancelacion: string | null;
-        notas: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     })[]>;
@@ -81,7 +79,6 @@ export declare class TurnosService {
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
         motivoCancelacion: string | null;
-        notas: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     })[]>;
@@ -113,7 +110,6 @@ export declare class TurnosService {
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
         motivoCancelacion: string | null;
-        notas: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     }>;
@@ -145,7 +141,6 @@ export declare class TurnosService {
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
         motivoCancelacion: string | null;
-        notas: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     }>;
@@ -177,7 +172,6 @@ export declare class TurnosService {
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
         motivoCancelacion: string | null;
-        notas: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     }>;
@@ -209,7 +203,6 @@ export declare class TurnosService {
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
         motivoCancelacion: string | null;
-        notas: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     }>;
@@ -237,7 +230,6 @@ export declare class TurnosService {
                 horaInicioAtencion: Date | null;
                 horaFinAtencion: Date | null;
                 motivoCancelacion: string | null;
-                notas: string | null;
                 empleadoId: number | null;
                 cajaId: number | null;
             };
@@ -262,7 +254,6 @@ export declare class TurnosService {
             horaInicioAtencion: Date | null;
             horaFinAtencion: Date | null;
             motivoCancelacion: string | null;
-            notas: string | null;
             empleadoId: number | null;
             cajaId: number | null;
         })[];
@@ -295,7 +286,6 @@ export declare class TurnosService {
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
         motivoCancelacion: string | null;
-        notas: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     }>;
@@ -327,7 +317,6 @@ export declare class TurnosService {
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
         motivoCancelacion: string | null;
-        notas: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     }) | null>;
@@ -359,7 +348,6 @@ export declare class TurnosService {
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
         motivoCancelacion: string | null;
-        notas: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     }) | null>;
@@ -375,42 +363,9 @@ export declare class TurnosService {
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
         motivoCancelacion: string | null;
-        notas: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     } | null>;
-    actualizarNotas(turnoId: number, notas: string): Promise<{
-        caja: {
-            id: number;
-            nombre: string;
-        } | null;
-        tipoTurno: {
-            id: number;
-            nombre: string;
-            prefijo: string;
-            duracionMin: number;
-            activo: boolean;
-        };
-        empleado: {
-            id: number;
-            nombre: string;
-        } | null;
-    } & {
-        id: number;
-        numero: number;
-        codigo: string;
-        estado: import("@prisma/client").$Enums.EstadoTurno;
-        tipoTurnoId: number;
-        duracionEstimada: number;
-        horaCreacion: Date;
-        horaLlamado: Date | null;
-        horaInicioAtencion: Date | null;
-        horaFinAtencion: Date | null;
-        motivoCancelacion: string | null;
-        notas: string | null;
-        empleadoId: number | null;
-        cajaId: number | null;
-    }>;
     obtenerEstadisticasTurno(turnoId: number): Promise<{
         tiempoEsperaMinutos: number | null;
         tiempoAtencionMinutos: number | null;
@@ -440,7 +395,6 @@ export declare class TurnosService {
         horaInicioAtencion: Date | null;
         horaFinAtencion: Date | null;
         motivoCancelacion: string | null;
-        notas: string | null;
         empleadoId: number | null;
         cajaId: number | null;
     }>;

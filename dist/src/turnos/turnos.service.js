@@ -377,22 +377,6 @@ let TurnosService = class TurnosService {
         }
         return this.crearTurno(tipoTurnoId, idempotencyKey);
     }
-    async actualizarNotas(turnoId, notas) {
-        const existe = await this.prisma.turno.findUnique({
-            where: { id: turnoId },
-        });
-        if (!existe)
-            throw new common_1.NotFoundException('Turno no encontrado');
-        return this.prisma.turno.update({
-            where: { id: turnoId },
-            data: { notas },
-            include: {
-                tipoTurno: true,
-                empleado: { select: { id: true, nombre: true } },
-                caja: { select: { id: true, nombre: true } },
-            },
-        });
-    }
     async obtenerEstadisticasTurno(turnoId) {
         const turno = await this.prisma.turno.findUnique({
             where: { id: turnoId },

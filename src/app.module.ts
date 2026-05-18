@@ -9,9 +9,10 @@ import { AuthService } from './auth/auth.service';
 import { JwtStrategy } from './auth/jwt.strategy/jwt.strategy';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { AdminModule } from './admin/admin.module';
+import { AnotacionesModule } from './anotaciones/anotaciones.module';
 
 @Module({
-  imports: [TurnosModule, TiposTurnoModule, AuthModule, CajaModule, UsuariosModule, AdminModule],
+  imports: [TurnosModule, TiposTurnoModule, AuthModule, CajaModule, UsuariosModule, AdminModule, AnotacionesModule],
   controllers: [AppController],
   providers: [AppService],
 })
