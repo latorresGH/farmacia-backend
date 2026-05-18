@@ -5,88 +5,88 @@ export declare class CajaService {
     crearCaja(data: {
         nombre: string;
     }): Promise<{
-        id: number;
         nombre: string;
         activo: boolean;
         createdAt: Date;
+        id: number;
     }>;
     asignarTiposTurno(cajaId: number, tipoTurnoIds: number[]): Promise<{
         usuarios: {
-            id: number;
             nombre: string;
+            id: number;
         }[];
         tiposTurno: {
-            id: number;
             nombre: string;
+            activo: boolean;
+            id: number;
             prefijo: string;
             duracionMin: number;
-            activo: boolean;
         }[];
     } & {
-        id: number;
         nombre: string;
         activo: boolean;
         createdAt: Date;
+        id: number;
     }>;
     obtenerCajas(): Promise<({
         usuarios: {
-            id: number;
             nombre: string;
+            id: number;
             email: string;
             rol: import("@prisma/client").$Enums.Rol;
         }[];
         tiposTurno: {
-            id: number;
             nombre: string;
+            activo: boolean;
+            id: number;
             prefijo: string;
             duracionMin: number;
-            activo: boolean;
         }[];
     } & {
-        id: number;
         nombre: string;
         activo: boolean;
         createdAt: Date;
+        id: number;
     })[]>;
     obtenerCaja(id: number): Promise<{
         usuarios: {
-            id: number;
             nombre: string;
+            id: number;
             email: string;
             rol: import("@prisma/client").$Enums.Rol;
         }[];
     } & {
-        id: number;
         nombre: string;
         activo: boolean;
         createdAt: Date;
+        id: number;
     }>;
     actualizarCaja(id: number, data: {
         nombre?: string;
     }): Promise<{
-        id: number;
         nombre: string;
         activo: boolean;
         createdAt: Date;
+        id: number;
     }>;
     eliminarCaja(id: number): Promise<{
-        id: number;
         nombre: string;
         activo: boolean;
         createdAt: Date;
+        id: number;
     }>;
     asignarUsuario(cajaId: number, usuarioId: number): Promise<{
-        id: number;
         nombre: string;
-        cajaId: number | null;
+        id: number;
         email: string;
         rol: import("@prisma/client").$Enums.Rol;
+        cajaId: number | null;
     }>;
     desasignarUsuario(usuarioId: number): Promise<{
-        id: number;
         nombre: string;
-        cajaId: number | null;
+        id: number;
         email: string;
         rol: import("@prisma/client").$Enums.Rol;
+        cajaId: number | null;
     }>;
 }

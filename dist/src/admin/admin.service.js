@@ -17,13 +17,13 @@ let AdminService = class AdminService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async getPicoHora(fecha) {
-        const dia = fecha ? new Date(fecha) : new Date();
-        dia.setHours(0, 0, 0, 0);
-        const finDia = new Date(dia);
-        finDia.setHours(23, 59, 59, 999);
+    async getPicoHora(desde, hasta) {
+        const fechaDesde = desde ? new Date(desde) : new Date();
+        fechaDesde.setHours(0, 0, 0, 0);
+        const fechaHasta = hasta ? new Date(hasta) : new Date(fechaDesde);
+        fechaHasta.setHours(23, 59, 59, 999);
         const turnos = await this.prisma.turno.findMany({
-            where: { horaCreacion: { gte: dia, lte: finDia } },
+            where: { horaCreacion: { gte: fechaDesde, lte: fechaHasta } },
             select: { horaCreacion: true, estado: true },
         });
         const picos = {};
@@ -257,6 +257,47 @@ let AdminService = class AdminService {
                 totalAtendidos: turnos.length,
                 tiempoEsperaPromedio: Math.round(tiempoEspera * 10) / 10,
                 tiempoAtencionPromedio: Math.round(tiempoAtencion * 10) / 10,
+            };
+        });
+    }
+    async getRendimientoCajas(desde, hasta) {
+        const fechaDesde = desde ? new Date(desde) : new Date(new Date().setDate(new Date().getDate() - 30));
+        fechaDesde.setHours(0, 0, 0, 0);
+        const fechaHasta = hasta ? new Date(hasta) : new Date();
+        fechaHasta.setHours(23, 59, 59, 999);
+        const cajas = await this.prisma.caja.findMany({
+            where: { activo: true },
+            include: {
+                turnos: {
+                    where: { horaCreacion: { gte: fechaDesde, lte: fechaHasta } },
+                    select: {
+                        estado: true,
+                        horaInicioAtencion: true,
+                        horaFinAtencion: true,
+                    },
+                },
+            },
+            orderBy: { id: 'asc' },
+        });
+        return cajas.map((caja) => {
+            const turnos = caja.turnos;
+            const atendidos = turnos.filter((t) => t.estado === 'ATENDIDO');
+            const cancelados = turnos.filter((t) => t.estado === 'CANCELADO');
+            const tiempoAtencion = atendidos.filter(t => t.horaInicioAtencion && t.horaFinAtencion).length > 0
+                ? atendidos
+                    .filter(t => t.horaInicioAtencion && t.horaFinAtencion)
+                    .reduce((acc, t) => acc + (new Date(t.horaFinAtencion).getTime() - new Date(t.horaInicioAtencion).getTime()) / 60000, 0) / atendidos.filter(t => t.horaFinAtencion).length
+                : 0;
+            return {
+                id: caja.id,
+                nombre: caja.nombre,
+                totalTurnos: turnos.length,
+                atendidos: atendidos.length,
+                cancelados: cancelados.length,
+                tiempoAtencionPromedio: Math.round(tiempoAtencion * 10) / 10,
+                tasaAtencion: turnos.length > 0
+                    ? Math.round((atendidos.length / turnos.length) * 100)
+                    : 0,
             };
         });
     }

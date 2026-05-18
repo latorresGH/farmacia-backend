@@ -2,7 +2,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export declare class AdminService {
     private prisma;
     constructor(prisma: PrismaService);
-    getPicoHora(fecha?: string): Promise<{
+    getPicoHora(desde?: string, hasta?: string): Promise<{
         hora: string;
         cantidad: number;
     }[]>;
@@ -29,11 +29,11 @@ export declare class AdminService {
             cantidad: number;
         }[];
         detalle: {
+            horaCreacion: Date;
+            motivoCancelacion: string | null;
             tipoTurno: {
                 nombre: string;
             };
-            horaCreacion: Date;
-            motivoCancelacion: string | null;
             empleado: {
                 id: number;
                 nombre: string;
@@ -66,6 +66,15 @@ export declare class AdminService {
         totalAtendidos: number;
         tiempoEsperaPromedio: number;
         tiempoAtencionPromedio: number;
+    }[]>;
+    getRendimientoCajas(desde?: string, hasta?: string): Promise<{
+        id: number;
+        nombre: string;
+        totalTurnos: number;
+        atendidos: number;
+        cancelados: number;
+        tiempoAtencionPromedio: number;
+        tasaAtencion: number;
     }[]>;
     getEvolucionDiaria(desde?: string, hasta?: string): Promise<{
         total: number;

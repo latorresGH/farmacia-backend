@@ -15,10 +15,13 @@ export class AdminController {
     return this.adminService.getResumenGeneral();
   }
 
-  @Get('pico-hora')
-  getPicoHora(@Query('fecha') fecha?: string) {
-    return this.adminService.getPicoHora(fecha);
-  }
+@Get('pico-hora')
+getPicoHora(
+  @Query('fecha') fecha?: string,
+  @Query('hasta') hasta?: string,
+) {
+  return this.adminService.getPicoHora(fecha, hasta);
+}
 
   @Get('rendimiento-empleados')
   getRendimiento(
@@ -55,5 +58,13 @@ getEvolucionDiaria(
   @Query('hasta') hasta?: string,
 ) {
   return this.adminService.getEvolucionDiaria(desde, hasta);
+}
+
+@Get('rendimiento-cajas')
+getRendimientoCajas(
+  @Query('desde') desde?: string,
+  @Query('hasta') hasta?: string,
+) {
+  return this.adminService.getRendimientoCajas(desde, hasta);
 }
 }

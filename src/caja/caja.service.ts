@@ -37,12 +37,12 @@ export class CajaService {
 
   async obtenerCajas() {
     return this.prisma.caja.findMany({
-      where: { activo: true },
+      // ✅ sin where activo — traés todas
       include: {
         usuarios: {
           select: { id: true, nombre: true, email: true, rol: true },
         },
-        tiposTurno: true, // ✅ incluís los tipos
+        tiposTurno: true,
       },
       orderBy: { id: 'asc' },
     });

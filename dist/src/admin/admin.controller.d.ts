@@ -8,7 +8,7 @@ export declare class AdminController {
         totalCajas: number;
         tiempoPromedioAtencionHoy: number;
     }>;
-    getPicoHora(fecha?: string): Promise<{
+    getPicoHora(fecha?: string, hasta?: string): Promise<{
         hora: string;
         cantidad: number;
     }[]>;
@@ -35,11 +35,11 @@ export declare class AdminController {
             cantidad: number;
         }[];
         detalle: {
+            horaCreacion: Date;
+            motivoCancelacion: string | null;
             tipoTurno: {
                 nombre: string;
             };
-            horaCreacion: Date;
-            motivoCancelacion: string | null;
             empleado: {
                 id: number;
                 nombre: string;
@@ -72,5 +72,14 @@ export declare class AdminController {
         atendidos: number;
         cancelados: number;
         fecha: string;
+    }[]>;
+    getRendimientoCajas(desde?: string, hasta?: string): Promise<{
+        id: number;
+        nombre: string;
+        totalTurnos: number;
+        atendidos: number;
+        cancelados: number;
+        tiempoAtencionPromedio: number;
+        tasaAtencion: number;
     }[]>;
 }

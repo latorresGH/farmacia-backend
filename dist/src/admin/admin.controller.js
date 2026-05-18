@@ -26,8 +26,8 @@ let AdminController = class AdminController {
     getResumen() {
         return this.adminService.getResumenGeneral();
     }
-    getPicoHora(fecha) {
-        return this.adminService.getPicoHora(fecha);
+    getPicoHora(fecha, hasta) {
+        return this.adminService.getPicoHora(fecha, hasta);
     }
     getRendimiento(desde, hasta) {
         return this.adminService.getRendimientoEmpleados(desde, hasta);
@@ -44,6 +44,9 @@ let AdminController = class AdminController {
     getEvolucionDiaria(desde, hasta) {
         return this.adminService.getEvolucionDiaria(desde, hasta);
     }
+    getRendimientoCajas(desde, hasta) {
+        return this.adminService.getRendimientoCajas(desde, hasta);
+    }
 };
 exports.AdminController = AdminController;
 __decorate([
@@ -55,8 +58,9 @@ __decorate([
 __decorate([
     (0, common_1.Get)('pico-hora'),
     __param(0, (0, common_1.Query)('fecha')),
+    __param(1, (0, common_1.Query)('hasta')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], AdminController.prototype, "getPicoHora", null);
 __decorate([
@@ -97,6 +101,14 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], AdminController.prototype, "getEvolucionDiaria", null);
+__decorate([
+    (0, common_1.Get)('rendimiento-cajas'),
+    __param(0, (0, common_1.Query)('desde')),
+    __param(1, (0, common_1.Query)('hasta')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], AdminController.prototype, "getRendimientoCajas", null);
 exports.AdminController = AdminController = __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)('ADMIN'),

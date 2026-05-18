@@ -43,7 +43,6 @@ let CajaService = class CajaService {
     }
     async obtenerCajas() {
         return this.prisma.caja.findMany({
-            where: { activo: true },
             include: {
                 usuarios: {
                     select: { id: true, nombre: true, email: true, rol: true },
